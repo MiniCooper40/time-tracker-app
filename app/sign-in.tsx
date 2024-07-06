@@ -1,16 +1,12 @@
 import {LoginForm} from "@/src/features/auth/components/loginForm";
 import {View} from "tamagui";
+import {FormPageLayout} from "@/src/components/layouts/FormPageLayout";
 
 const SignIn = () => {
     return (
-        <View
-            padding="$4"
-            height="100%"
-            alignContent="center"
-            justifyContent="center"
-        >
+        <FormPageLayout>
             <LoginForm />
-        </View>
+        </FormPageLayout>
     )
 }
 

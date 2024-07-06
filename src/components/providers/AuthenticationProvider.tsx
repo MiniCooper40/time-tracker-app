@@ -5,7 +5,7 @@ import {supabase} from "@/src/lib/supabase";
 import {WithChildren} from "@/src/types/WithChildren";
 import {router} from "expo-router";
 
-export const Authentication = ({children}: WithChildren) => {
+export const AuthenticationProvider = ({children}: WithChildren) => {
     const [session, setSession] = useState<Session | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
 

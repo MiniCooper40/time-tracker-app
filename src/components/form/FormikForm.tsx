@@ -19,7 +19,6 @@ export interface FormProps<T extends AnyObject> {
 const Form = ({children}: WithChildren) => {
     const formik = useFormikContext()
     const handleSubmit = () => {
-        console.log("submitting")
         formik.handleSubmit()
     }
     return (

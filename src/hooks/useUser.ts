@@ -19,3 +19,10 @@ export const useUser = () => {
         onSuccess: console.log
     })
 }
+
+export const useUserId = () => {
+    const useUserResponse = useUser();
+    const {data: user} = useUserResponse
+    if (user) return user.userId
+    else return undefined
+}

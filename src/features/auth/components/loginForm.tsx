@@ -9,16 +9,12 @@ import {useAuthentication} from "@/src/hooks/useAuthentication";
 
 
 export const LoginForm = () => {
-
     const [loading, setLoading] = useState<boolean>(false)
-    const {session} = useAuthentication()
-    console.log({session})
+
     const handleLogin = async (credentials: CredentialsInput) => {
         setLoading(true)
-        console.log("got credentials " + credentials)
         await signIn(credentials)
             .then(result => {
-                console.log({result})
                 if (result.data.session) router.push("/")
             })
             .catch(console.log)

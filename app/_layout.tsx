@@ -1,9 +1,8 @@
-import {Slot, Stack} from "expo-router";
-import {Authentication} from "@/src/components/Authentication";
+import {Slot} from "expo-router";
+import {AuthenticationProvider} from "@/src/components/providers/AuthenticationProvider";
 import {TamaguiProvider} from "tamagui";
 import config from "../tamagui.config"
 import {useFonts} from "expo-font";
-import {SafeAreaView} from "react-native-safe-area-context";
 import {QueryClientProvider} from "react-query";
 import {queryClient} from "@/src/lib/reactQuery";
 
@@ -20,13 +19,11 @@ export default function RootLayout() {
 
   return (
     <TamaguiProvider config={config}>
-        <Authentication>
+        <AuthenticationProvider>
             <QueryClientProvider client={queryClient}>
-                <SafeAreaView>
-                    <Slot />
-                </SafeAreaView>
+                <Slot />
             </QueryClientProvider>
-        </Authentication>
+        </AuthenticationProvider>
     </TamaguiProvider>
   );
 }
