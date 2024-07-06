@@ -1,4 +1,4 @@
-import {LoginForm} from "@/src/features/auth/loginForm";
+import {LoginForm} from "@/src/features/auth/components/loginForm";
 import {View} from "tamagui";
 
 const SignIn = () => {
