@@ -1,4 +1,4 @@
-import {QueryClient} from "react-query";
+import {QueryClient, UseMutationOptions} from "react-query";
 
 export const queryClient = new QueryClient({
     defaultOptions: {
@@ -10,3 +10,5 @@ export const queryClient = new QueryClient({
         }
     }
 })
+
+export type MutationOptions<A,B,C,D> = Omit<UseMutationOptions<A,B,C,D>, "mutationFn">

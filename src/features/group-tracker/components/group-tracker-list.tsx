@@ -1,5 +1,5 @@
 import {YStack} from "tamagui";
-import {GroupTrackerCard} from "@/src/features/group-tracker/components/groupTrackerCard";
+import {GroupTrackerCard} from "@/src/features/group-tracker/components/group-tracker-card";
 
 interface GroupTrackerListProps {
     groupTrackers: GroupTracker[]

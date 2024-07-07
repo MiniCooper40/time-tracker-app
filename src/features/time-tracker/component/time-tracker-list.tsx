@@ -1,5 +1,5 @@
 import {YStack} from "tamagui";
-import {TimeTrackerCard} from "@/src/features/time-tracker/component/timeTrackerCard";
+import {TimeTrackerCard} from "@/src/features/time-tracker/component/time-tracker-card";
 
 interface TimeTrackerListProps {
     timeTrackers: TimeTracker[]
@@ -7,7 +7,7 @@ interface TimeTrackerListProps {
 
 export const TimeTrackerList = ({timeTrackers}: TimeTrackerListProps) => {
     return (
-        <YStack>
+        <YStack gap="$2">
             {timeTrackers.map(timeTracker => (
                 <TimeTrackerCard timeTracker={timeTracker} key={timeTracker.trackerId} />
             ))}

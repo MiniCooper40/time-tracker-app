@@ -28,7 +28,7 @@ const Layout = () => {
             }}
         >
             <Tabs.Screen
-                name="index"
+                name="(dashboard)"
                 options={{
                     title: "Dashboard",
                     tabBarIcon: ({color, size}) => <AntDesign name="home" size={size} color={color} />

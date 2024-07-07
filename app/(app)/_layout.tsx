@@ -7,7 +7,15 @@ const Layout = () => {
 
     if(loading) return <Text>Loading...</Text>
     else if(!session) return <Redirect href="/sign-in" />;
-    else return <Slot />
+    else return (
+        <Stack
+            screenOptions={{
+                headerShown: false
+            }}
+        >
+            <Stack.Screen name="(root)" />
+        </Stack>
+        )
 }
 
 export default Layout

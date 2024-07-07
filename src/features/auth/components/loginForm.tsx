@@ -4,9 +4,7 @@ import {FormikText} from "@/src/components/form/FormikText";
 import {Button, Form, YStack} from "tamagui";
 import {router} from "expo-router";
 import {useState} from "react";
-import {ActivityIndicator, Text} from "react-native";
-import {useAuthentication} from "@/src/hooks/useAuthentication";
-
+import {ActivityIndicator} from "react-native";
 
 export const LoginForm = () => {
     const [loading, setLoading] = useState<boolean>(false)
