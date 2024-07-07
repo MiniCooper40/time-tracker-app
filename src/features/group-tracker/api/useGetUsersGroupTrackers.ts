@@ -1,12 +1,13 @@
 import {api} from "@/src/lib/api";
 import {useQuery} from "react-query";
 import {AxiosError} from "axios";
+import GroupTrackers from "@/app/(app)/(root)/group-trackers";
 
-const getUsersGroupTrackers = (userId: string): Promise<TimeTracker[]> => {
+const getUsersGroupTrackers = (userId: string): Promise<GroupTracker[]> => {
     return api.get(`/user/${userId}/group-tracker`)
 }
 export const useGetUsersGroupTrackers = (userId: string) => {
-    return useQuery<TimeTracker[], AxiosError>({
+    return useQuery<GroupTracker[], AxiosError>({
         queryKey: [userId, "get-users-group-trackers"],
         queryFn: () => getUsersGroupTrackers(userId)
     })

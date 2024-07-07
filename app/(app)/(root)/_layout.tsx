@@ -3,9 +3,12 @@ import {useUser} from "@/src/hooks/useUser";
 import { AntDesign } from '@expo/vector-icons';
 import {Tabs} from "expo-router";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTheme } from "tamagui";
 
 const Layout = () => {
     const useUserQuery = useUser()
+
+    const theme = useTheme()
 
     if(useUserQuery.isFetching) return <Text>Loading...</Text>
     else return (
@@ -13,10 +16,15 @@ const Layout = () => {
             screenOptions={{
                 tabBarShowLabel: false,
                 tabBarStyle: {
-                    height: 64
+                    height: 64,
+                    backgroundColor: theme.background?.get(),
+                    elevation: 0
                 },
                 headerShown: false,
-                tabBarActiveTintColor: "purple"
+                tabBarActiveTintColor: theme.colorFocus?.get()
+            }}
+            sceneContainerStyle={{
+                backgroundColor: theme.background?.get()
             }}
         >
             <Tabs.Screen

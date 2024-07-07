@@ -1,4 +1,4 @@
 import {config} from "@tamagui/config/v3"
-import {createTamagui} from "tamagui";
+import {createTamagui, createTokens} from "tamagui";
 
-export default createTamagui(config)
+export default createTamagui({...config})
