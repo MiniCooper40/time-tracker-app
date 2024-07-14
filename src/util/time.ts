@@ -8,7 +8,8 @@ const secondFactor = 1000
 const minuteFactor = 1000 * 60
 const hourFactor = 1000 * 60 * 60
 
-export const millisecondsToTimestamp = (milliseconds: number): string => {
+export const millisecondsToTimestamp = (milliseconds: number | undefined): string => {
+    if (!milliseconds) return BLANK_TIMESTAMP
     const hours = Math.floor(milliseconds / hourFactor)
     milliseconds -= hours * hourFactor
 

@@ -20,8 +20,10 @@ const Layout = () => {
                     backgroundColor: theme.background?.get(),
                     elevation: 0
                 },
-                headerShown: false,
-                tabBarActiveTintColor: theme.colorFocus?.get()
+                tabBarActiveTintColor: theme.colorFocus?.get(),
+                headerStyle: {
+                    height: 70,
+                }
             }}
             sceneContainerStyle={{
                 backgroundColor: theme.background?.get()

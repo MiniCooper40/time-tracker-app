@@ -2,11 +2,14 @@ import {useSaveTrackedTime} from "@/src/features/time-tracker/api/save-tracked-t
 import {Stopwatch, StopwatchEvent} from "@/src/components/timer/stopwatch";
 import {asLocalDateTime} from "@/src/util/time";
 import {useTimeTracker} from "@/src/features/time-tracker/hooks/useTimeTracker";
-interface TimeTrackerStopwatchProps {
+import {ViewProps} from "tamagui";
+type TimeTrackerStopwatchProps = {
     trackerId: string
-}
+} & ViewProps
 
-export const TimeTrackerStopwatch = ({trackerId}: TimeTrackerStopwatchProps) => {
+export const TimeTrackerStopwatch = (props: TimeTrackerStopwatchProps) => {
+
+    const {trackerId} = props
 
     const {startTime, setStartTime, loading} = useTimeTracker(trackerId)
 
@@ -34,6 +37,7 @@ export const TimeTrackerStopwatch = ({trackerId}: TimeTrackerStopwatchProps) => 
             loading={loading || saveTrackedTime.isLoading}
             onStop={handleSaveTrackedTime}
             onStart={handleStartTrackedTime}
+            {...props}
         />
     )
 }

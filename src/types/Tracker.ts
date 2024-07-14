@@ -1,6 +1,6 @@
 interface Tracker {
     name: string;
-    description: string;
+    description?: string;
     color: string;
     lastModified: Date;
     dateCreated: Date;
@@ -9,9 +9,9 @@ interface Tracker {
 }
 
 interface GroupTracker extends Tracker {
-    timeTrackers: TimeTracker[];
+    trackers: TimeTracker[];
 }
 
 interface TimeTracker extends Tracker {
-    groupTrackers: GroupTracker[];
+    groups: GroupTracker[];
 }

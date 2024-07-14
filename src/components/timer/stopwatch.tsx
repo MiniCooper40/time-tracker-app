@@ -1,9 +1,10 @@
 import {Callback} from "@/src/types/Callback"
-import {Text} from "tamagui";
+import {Text, ViewProps} from "tamagui";
 import { FontAwesome } from '@expo/vector-icons';
 import {useEffect, useState} from "react";
 import {BLANK_TIMESTAMP, millisecondsToTimestamp} from "@/src/util/time";
 import {Center} from "@/src/components/layouts/Center";
+import {current} from "@react-native-community/cli-tools/build/releaseChecker";
 
 interface StopwatchState {
     startTime: number;
@@ -15,15 +16,15 @@ export interface StopwatchEvent {
     endTime: number;
 }
 
-interface StopwatchProps {
+type StopwatchProps = {
     startTime: number|undefined;
     loading: boolean;
     onStop: Callback<number>;
     onStart: Callback<number>;
-}
+} & ViewProps
 
-export const Stopwatch = ({startTime, loading, onStop, onStart}: StopwatchProps) => {
-
+export const Stopwatch = (props: StopwatchProps) => {
+    const {startTime, loading, onStop, onStart} = props
 
     const [currentTime, setCurrentTime] = useState(Date.now())
 
@@ -40,10 +41,10 @@ export const Stopwatch = ({startTime, loading, onStop, onStart}: StopwatchProps)
     }
 
     return (
-        <Center width="$10">
-            <FontAwesome name={startTime ? "pause" : "play"} size={40} color="black" onPress={handleToggle} />
-            {startTime && <Text>{millisecondsToTimestamp(currentTime - startTime)}</Text>}
-            {!startTime && <Text>{BLANK_TIMESTAMP}</Text>}
+        <Center {...props}>
+            <FontAwesome name={startTime ? "pause" : "play"} size={30} color="black" onPress={handleToggle} />
+            {startTime && currentTime && <Text>{millisecondsToTimestamp(Date.now() - startTime)}</Text>}
+            {(!startTime || !currentTime) && <Text>{BLANK_TIMESTAMP}</Text>}
         </Center>
     )
 }
