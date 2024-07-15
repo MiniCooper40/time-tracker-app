@@ -1,21 +1,29 @@
-import {Card, Separator, Text, XStack, YStack} from "tamagui";
+import {Card, CardProps, Separator, Text, XStack, YStack} from "tamagui";
 import {TimeTrackerStopwatch} from "@/src/features/time-tracker/component/time-tracker-stopwatch";
 import {TrackerCard} from "@/src/components/cards/tracker-card";
 import {Label} from "@/src/components/typography/Label";
 import {TrackerPreviewGrid} from "@/src/components/tracker-preview/tracker-preview-grid";
+import {useRouter} from "expo-router";
+import timeTrackers from "@/app/(app)/(root)/time-trackers/(time-trackers)";
 
-interface TimeTrackerCardProps {
+type TimeTrackerCardProps = {
     timeTracker: TimeTracker
-}
+} & CardProps
 
-export const TimeTrackerCard = ({timeTracker}: TimeTrackerCardProps) => {
-
+export const TimeTrackerCard = (props: TimeTrackerCardProps) => {
+    const {timeTracker} = props
     const {name, trackerId, description = "No description", groups} = timeTracker
+    const router = useRouter()
+
+    const routeToTimeTracker = () => {
+        console.log("routing to", timeTracker.trackerId)
+        router.push(`/time-trackers/${timeTracker.trackerId}`)
+    }
 
     return (
-        <TrackerCard>
-            <Card.Header>
-                <Label>{name}</Label>
+        <TrackerCard {...props} onPress={() => console.log("presed tracker card")}>
+            <Card.Header onPress={routeToTimeTracker}>
+                <Label onPress={routeToTimeTracker}>{name}</Label>
             </Card.Header>
             <XStack width="100%" justifyContent="space-between">
                 <YStack gap="$1" maxWidth="80%">

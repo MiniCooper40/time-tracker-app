@@ -4,7 +4,6 @@ import {Redirect, Slot, Stack} from "expo-router";
 
 const Layout = () => {
     const {session, loading} = useAuthentication()
-    console.log(session?.access_token)
     if(loading) return <Text>Loading...</Text>
     else if(!session) return <Redirect href="/sign-in" />;
     else return (

@@ -21,6 +21,7 @@ export const TimeTrackerStopwatch = (props: TimeTrackerStopwatchProps) => {
     })
 
     const handleSaveTrackedTime = (endTime: number) => {
+        if (!startTime) throw Error("failed to save, start time was undefined")
         saveTrackedTime.mutate({
             startTime: asLocalDateTime(startTime),
             endTime: asLocalDateTime(endTime),

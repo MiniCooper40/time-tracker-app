@@ -1,6 +1,7 @@
 import {TrackedTime} from "@/src/types/Time";
 import {api} from "@/src/lib/api";
 import {MutationOptions, useMutation} from "react-query";
+import {queryClient} from "@/src/lib/reactQuery";
 
 export interface TrackedTimeInput {
     startTime: string;
@@ -21,6 +22,10 @@ type TrackTimeMutationOptions = MutationOptions<TrackedTime, unknown, TrackedTim
 export const useSaveTrackedTime = (trackerId: string, options: TrackTimeMutationOptions = {}) => {
     return useMutation({
         mutationFn: (trackedTime: TrackedTimeInput) => saveTrackedTime(trackerId, trackedTime),
-        ...options
+        ...options,
+        onSuccess: (...args) => {
+            queryClient.invalidateQueries({queryKey: ["analytics"]}).then(console.log)
+            options.onSuccess?.(...args)
+        },
     })
 }
