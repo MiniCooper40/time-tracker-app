@@ -5,6 +5,7 @@ import config from "../tamagui.config"
 import {useFonts} from "expo-font";
 import {QueryClientProvider} from "react-query";
 import {queryClient} from "@/src/lib/reactQuery";
+import {GestureHandlerRootView} from "react-native-gesture-handler";
 
 export default function RootLayout() {
 
@@ -21,7 +22,9 @@ export default function RootLayout() {
     <TamaguiProvider config={config}>
         <AuthenticationProvider>
             <QueryClientProvider client={queryClient}>
-                <Slot />
+                <GestureHandlerRootView>
+                    <Slot />
+                </GestureHandlerRootView>
             </QueryClientProvider>
         </AuthenticationProvider>
     </TamaguiProvider>

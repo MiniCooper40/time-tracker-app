@@ -1,37 +1,28 @@
 import {useLocalSearchParams} from "expo-router";
-import {Text, View} from "tamagui";
-import {
-    useTimeTrackerGranularDailyAnalytics,
-    useTimeTrackerGranularWeeklyAnalytics
-} from "@/src/features/analytics/api/time-tracker-analytics";
+import {Text} from "tamagui";
 import {TrackingDate} from "@/src/features/analytics/types/TrackingDate";
-import {VictoryBar} from "victory-native";
+import {
+    TimeTrackerWeeklyAnalyticsChart
+} from "@/src/features/time-tracker/component/time-tracker-weekly-analytics-chart";
+import {ONE_HOUR_MILLIS, ONE_WEEK_MILLIS} from "@/src/util/time";
 
-const ONE_WEEK_MILLIS = 1000 * 60 * 60 * 24 * 6
 const Index = () => {
     const {trackerId} = useLocalSearchParams()
 
     if (typeof trackerId !== "string") return <Text>Something went wrong...</Text>
 
-    const now = new Date(Date.now() - ONE_WEEK_MILLIS)
-    const trackingDate:TrackingDate = {
-        year: now.getFullYear(),
-        month: now.getMonth()+1,
-        day: now.getDate()
-    }
+    const weekStartMillis = Date.now() - ONE_WEEK_MILLIS - ONE_HOUR_MILLIS
 
-    const analytics = useTimeTrackerGranularWeeklyAnalytics(trackerId, trackingDate)
+    const weekStartDate = new Date(weekStartMillis)
+    const trackingDate: TrackingDate = {
+        year: weekStartDate.getFullYear(),
+        month: weekStartDate.getMonth()+1,
+        day: weekStartDate.getDate()
+    }
+    console.log("week start date: ", trackingDate)
 
     return (
-        <>
-            {!analytics.data && <Text>Have not received</Text>}
-            {analytics.data && Array.from(Object.entries(analytics.data)).map(([name, value]) => {
-                return <Text key={name}>{name}: {JSON.stringify(value)}</Text>
-            })}
-            {analytics.data && (
-                <VictoryBar width={200} x="day" y="duration" data={analytics.data.dailyAnalytics.map((t, i) => ({duration: t.totalDuration, day: i}))} />
-            )}
-        </>
+        <TimeTrackerWeeklyAnalyticsChart trackerId={trackerId} startDate={trackingDate} />
     )
 }
 
