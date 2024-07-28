@@ -1,28 +1,39 @@
 import {useLocalSearchParams} from "expo-router";
-import {Text} from "tamagui";
-import {TrackingDate} from "@/src/features/analytics/types/TrackingDate";
+import {Separator, Text, YStack} from "tamagui";
 import {
     TimeTrackerWeeklyAnalyticsChart
 } from "@/src/features/time-tracker/component/time-tracker-weekly-analytics-chart";
-import {ONE_HOUR_MILLIS, ONE_WEEK_MILLIS} from "@/src/util/time";
+import {currentTrackingDate, plusDays,} from "@/src/util/time";
+import {useTimeTracker} from "@/src/features/time-tracker/hooks/useTimeTracker";
+import {useGetTimeTracker} from "@/src/features/time-tracker/api/use-get-time-tracker";
+import {Title} from "@/src/components/typography/Title";
+import {TrackerPreviewGrid} from "@/src/components/tracker-preview/tracker-preview-grid";
+import {Calender} from "@/src/components/charts/calender/Calender";
 
 const Index = () => {
     const {trackerId} = useLocalSearchParams()
 
     if (typeof trackerId !== "string") return <Text>Something went wrong...</Text>
 
-    const weekStartMillis = Date.now() - ONE_WEEK_MILLIS - ONE_HOUR_MILLIS
+    const timeTracker = useGetTimeTracker(trackerId)
 
-    const weekStartDate = new Date(weekStartMillis)
-    const trackingDate: TrackingDate = {
-        year: weekStartDate.getFullYear(),
-        month: weekStartDate.getMonth()+1,
-        day: weekStartDate.getDate()
-    }
-    console.log("week start date: ", trackingDate)
+    const initialTrackingDate = plusDays(currentTrackingDate(), -6)
+
+    if (!timeTracker.data) return <Text>Loading...</Text>
+
+    console.log({data: timeTracker.data})
 
     return (
-        <TimeTrackerWeeklyAnalyticsChart trackerId={trackerId} startDate={trackingDate} />
+        <YStack gap="$4">
+            <YStack>
+                <Title theme="h1">{timeTracker.data.name}</Title>
+                <Text>{timeTracker.data.description}</Text>
+            </YStack>
+            <Separator />
+            <TrackerPreviewGrid trackers={timeTracker.data.groups} />
+            <TimeTrackerWeeklyAnalyticsChart trackerId={trackerId} startDate={initialTrackingDate} />
+            <Calender year={2024} month={7} />
+        </YStack>
     )
 }
 

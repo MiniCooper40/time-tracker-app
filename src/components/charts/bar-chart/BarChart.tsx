@@ -1,22 +1,20 @@
-import {Canvas, Group, Path, Rect, Skia, Text, useFont} from "@shopify/react-native-skia";
+import {Canvas, Group, Path, Skia, useFont} from "@shopify/react-native-skia";
 import {View} from "tamagui";
-import Animated, {useDerivedValue, useSharedValue, withTiming} from "react-native-reanimated";
-import {useCallback, useEffect, useMemo, useState} from "react";
+import {useMemo, useState} from "react";
 import {BarChartBar} from "@/src/components/charts/bar-chart/BarChartBar";
 import {LayoutChangeEvent} from "react-native";
 import {BarChartLabel} from "@/src/components/charts/bar-chart/BarChartLabel";
 import {
     Gesture,
     GestureDetector,
-    GestureHandlerRootView, GestureStateChangeEvent, GestureTouchEvent,
+    GestureStateChangeEvent,
+    GestureTouchEvent,
     LongPressGestureHandlerEventPayload
 } from "react-native-gesture-handler";
 import {
     GestureStateManagerType
 } from "react-native-gesture-handler/lib/typescript/handlers/gestures/gestureStateManager";
 import {BarTooltip} from "@/src/components/charts/bar-chart/BarChartTooltip";
-import {millisecondsToDetailedTimestamp} from "@/src/util/time";
-import {cli} from "yaml/dist/cli";
 
 interface BarChartTick {
     value: number;
@@ -38,11 +36,9 @@ interface BarChartProps {
     barSpacing?: number;
     labelPadding?: number;
     tickLabelWidth?: number;
+    loading?: boolean;
 }
 
-const f1 = require("../../../../assets/fonts/Raleway/Raleway-Bold.ttf")
-const f2 = require("../../../../assets/fonts/SourceSans/SourceSansPro-Semibold.otf")
-const f3 = require("../../../../assets/fonts/SourceSans/SourceSansPro-Light.otf")
 const BarChart = ({
                       data,
                       ticks,
@@ -50,7 +46,8 @@ const BarChart = ({
                       height = 300,
                       barSpacing = 30,
                       labelPadding = 4,
-                      tickLabelWidth = 40
+                      tickLabelWidth = 40,
+                      loading = false
                   }: BarChartProps) => {
 
     const [pressedBarIndex, setPressedBarIndex] = useState<number | undefined>()
@@ -63,11 +60,10 @@ const BarChart = ({
 
     const chartWidth = Math.max(layout.width - tickLabelWidth, 0)
     const chartX = tickLabelWidth
-    const chartY = height
 
-    const tooltipTitleFont = useFont(f1, 16)
-    const labelFont = useFont(f2, 12)
-    const tooltipBodyFont = useFont(f3, 14)
+    const tooltipTitleFont = useFont(require("../../../../assets/fonts/Raleway/Raleway-Bold.ttf"), 16)
+    const labelFont = useFont(require("../../../../assets/fonts/SourceSans/SourceSansPro-Semibold.otf"), 12)
+    const tooltipBodyFont = useFont(require("../../../../assets/fonts/SourceSans/SourceSansPro-Light.otf"), 14)
 
     const barWidth = useMemo(() => {
         if (chartWidth === 0) return 0
@@ -84,17 +80,26 @@ const BarChart = ({
     }, [barWidth])
 
     const tickCenters = useMemo(() => {
-        return ticks.map(({value}) => chartY - (value / maxY * chartY))
-    }, [maxY, chartY])
+        return ticks.map(({value}) => height - (value / maxY * height))
+    }, [maxY, height])
+
+    const chartY = height
+
+    const overflowTopCorrection = useMemo(() => {
+        const topLabelY = (tickCenters.at(-1) ?? 0) - (labelFont?.measureText("Label").height ?? 0)
+        return Math.max(0, -topLabelY)
+    }, [tickCenters, labelFont])
+
+    const chartBottom = useMemo(() => height, [overflowTopCorrection, height])
 
     const barPositions = useMemo(() => {
         return data.map(({value}, index) => ({
             x: chartX + barSpacing * (index + 1) + (barWidth * index),
-            y: height - (chartY * (value / maxValue)),
+            y: chartY - (chartY * (value / maxY)) + overflowTopCorrection,
             width: barWidth,
-            height: chartY * (value / maxValue)
+            height: chartY * (value / maxY)
         }))
-    }, [barWidth])
+    }, [barWidth, overflowTopCorrection, maxY])
 
     const updateCanvasDimensions = (e: LayoutChangeEvent) => {
         const {width, height} = e.nativeEvent.layout
@@ -124,17 +129,17 @@ const BarChart = ({
 
     const xAxisPath = useMemo(() => {
         const path = Skia.Path.Make()
-        path.moveTo(chartX + barSpacing / 2, chartY)
-        path.lineTo(chartX + chartWidth, chartY)
+        path.moveTo(chartX + barSpacing / 2, chartBottom)
+        path.lineTo(chartX + chartWidth, chartBottom)
         return path
-    }, [chartX, barSpacing, chartWidth, chartY])
+    }, [chartX, barSpacing, chartWidth, chartBottom])
 
     const yAxisPath = useMemo(() => {
         const path = Skia.Path.Make()
-        path.moveTo(chartX + barSpacing / 2, chartY)
-        path.lineTo(chartX + barSpacing / 2, chartY - height)
+        path.moveTo(chartX + barSpacing / 2, chartBottom)
+        path.lineTo(chartX + barSpacing / 2, 0)
         return path
-    }, [chartX, barSpacing, chartWidth, chartY])
+    }, [chartX, barSpacing, chartWidth, chartBottom])
 
     return (
         <GestureDetector gesture={gesture}>
@@ -142,10 +147,10 @@ const BarChart = ({
                 <Canvas style={{flex: 1}} onLayout={updateCanvasDimensions}>
                     {layout.width !== 0 && labelFont && tooltipBodyFont && tooltipTitleFont && (
                         <Group>
-                            {data.map(({value, label}, index) => (
+                            {!loading && data.map(({value, label}, index) => (
                                 <BarChartBar pressed={pressedBarIndex === index} color="grey" key={label}
-                                             x={chartX + barSpacing * (index + 1) + (barWidth * index)} y={chartY}
-                                             width={barWidth} height={chartY * (value / maxValue)}/>
+                                             x={chartX + barSpacing * (index + 1) + (barWidth * index)} y={chartBottom}
+                                             width={barWidth} height={chartY * (value / maxY)}/>
                             ))}
                             {labelFont && data.map(({value, label}, i) => {
                                 const barCenter = barCenters[i]
@@ -156,11 +161,11 @@ const BarChart = ({
                             })}
                             {labelFont && (
                                 tickCenters.map((value, index) => {
-
                                     const labelRect = labelFont.measureText(ticks[index].label.toString())
                                     const labelX = tickLabelWidth - labelRect.width
-                                    // console.log(`ylablelx`, labelX)
-                                    return <BarChartLabel key={index} x={labelX} y={value} font={labelFont}
+                                    return <BarChartLabel key={index} x={labelX}
+                                                          y={value + labelRect.height / 2 + overflowTopCorrection}
+                                                          font={labelFont}
                                                           text={ticks[index].label} color="black"/>
                                 }))
                             }

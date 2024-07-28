@@ -23,7 +23,8 @@ const Layout = () => {
                 tabBarActiveTintColor: theme.colorFocus?.get(),
                 headerStyle: {
                     height: 70
-                }
+                },
+                headerShown: false
             }}
             sceneContainerStyle={{
                 backgroundColor: theme.background?.get()

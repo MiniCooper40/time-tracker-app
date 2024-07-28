@@ -1,9 +1,12 @@
 import {Slot} from "expo-router";
 import {PageContainer} from "@/src/components/layouts/PageContainer";
+import {ScrollView} from "tamagui";
 
 const Layout = () => (
-    <PageContainer>
-        <Slot />
-    </PageContainer>
+    <ScrollView>
+        <PageContainer>
+            <Slot />
+        </PageContainer>
+    </ScrollView>
 )
 export default Layout
