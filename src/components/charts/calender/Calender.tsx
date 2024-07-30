@@ -10,7 +10,7 @@ import {useMemo, useState} from "react";
 import {LayoutChangeEvent} from "react-native";
 import {daysInMonth, firstDayOfMonth, weeksInMonth} from "@/src/util/time";
 import star from "react-native-ratings/src/components/Star";
-import {BarTooltip} from "@/src/components/charts/bar-chart/BarChartTooltip";
+import {SkTooltip} from "@/src/components/charts/SkTooltip";
 
 interface CalenderProps {
     year: number;
@@ -114,8 +114,8 @@ const Calender = ({
 
     const verticalPositionForSelectedTooltip = () => {
         if (!selectedDay) return "center"
-        if (selectedDay.y > 200) return "bottom"
-        if (selectedDay.y < 100) return "top"
+        if (selectedDay.y > 200) return "top"
+        if (selectedDay.y < 100) return "bottom"
         return "center"
     }
 
@@ -126,20 +126,24 @@ const Calender = ({
                     <Group>
                         {dayPositions.map(({x, y, width, height, key}) => (
                             <Rect key={key} x={x} y={y} width={width} height={height}
-                                  color={x == selectedDay?.x && y == selectedDay?.y ? "lightgrey" : "grey"}/>
+                                  color={x == selectedDay?.x && y == selectedDay?.y && width == selectedDay?.width && height == selectedDay?.height ? "lightgrey" : "grey"}/>
                         ))}
                         {labelPositions.map(({x, y}, i) => (
                             <Text font={labelFont} text={dayLabels[i]} key={dayLabels[i]} x={x} y={y} color="black"/>
                         ))}
                         {selectedDay && (
-                            <BarTooltip
-                                x={selectedDay.x}
-                                y={selectedDay.y + selectedDay.height/2}
-                                distanceFromBar={selectedDay.width/2}
+                            <SkTooltip
+                                containerX={selectedDay.x}
+                                containerY={selectedDay.y}
+                                containerWidth={selectedDay.width}
+                                containerHeight={selectedDay.height}
                                 titleFont={tooltipTitleFont}
                                 entryFont={tooltipBodyFont}
                                 positionVertical={verticalPositionForSelectedTooltip()}
                                 positionHorizontal={selectedDay.x < layout.width/2 ? "right" : "left"}
+                                entries={["Test!!! lol", "Work please!", "Test!!! lol test test! long wide text", "Work please!", "Test!!! lol", "Work please!"]}
+                                padding={8}
+                                entrySpacing={6}
                             />
                         )}
                     </Group>

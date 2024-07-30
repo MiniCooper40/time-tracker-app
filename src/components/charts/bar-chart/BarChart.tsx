@@ -14,7 +14,7 @@ import {
 import {
     GestureStateManagerType
 } from "react-native-gesture-handler/lib/typescript/handlers/gestures/gestureStateManager";
-import {BarTooltip} from "@/src/components/charts/bar-chart/BarChartTooltip";
+import {SkTooltip} from "@/src/components/charts/SkTooltip";
 
 interface BarChartTick {
     value: number;
@@ -170,16 +170,19 @@ const BarChart = ({
                                 }))
                             }
                             {pressedBarIndex !== undefined && (
-                                <BarTooltip
+                                <SkTooltip
                                     positionHorizontal={pressedBarIndex > data.length / 2 ? "left" : "right"}
+                                    positionVertical={"center"}
                                     titleFont={tooltipTitleFont}
                                     entryFont={tooltipBodyFont}
-                                    x={barPositions[pressedBarIndex].x + barPositions[pressedBarIndex].width / 2}
-                                    y={barPositions[pressedBarIndex].y + (barPositions[pressedBarIndex].height > 100 ? barPositions[pressedBarIndex].height / 2 : 0)}
+                                    containerX={barPositions[pressedBarIndex].x}
+                                    containerY={barPositions[pressedBarIndex].y}
                                     title={data[pressedBarIndex].detailedLabel}
                                     padding={6}
                                     entries={data[pressedBarIndex].tooltipEntries}
                                     entrySpacing={6}
+                                    containerHeight={barPositions[pressedBarIndex].height}
+                                    containerWidth={barPositions[pressedBarIndex].width}
                                 />
                             )}
                             <Path path={xAxisPath} color="grey" style="stroke"/>
