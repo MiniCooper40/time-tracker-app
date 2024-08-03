@@ -1,37 +1,39 @@
 import {useLocalSearchParams} from "expo-router";
-import {Text, View} from "tamagui";
+import {Separator, Text, YStack} from "tamagui";
 import {
-    useTimeTrackerGranularDailyAnalytics,
-    useTimeTrackerGranularWeeklyAnalytics
-} from "@/src/features/analytics/api/time-tracker-analytics";
-import {TrackingDate} from "@/src/features/analytics/types/TrackingDate";
-import {VictoryBar} from "victory-native";
+    TimeTrackerWeeklyAnalyticsChart
+} from "@/src/features/time-tracker/component/time-tracker-weekly-analytics-chart";
+import {currentTrackingDate, plusDays,} from "@/src/util/time";
+import {useTimeTracker} from "@/src/features/time-tracker/hooks/useTimeTracker";
+import {useGetTimeTracker} from "@/src/features/time-tracker/api/use-get-time-tracker";
+import {Title} from "@/src/components/typography/Title";
+import {TrackerPreviewGrid} from "@/src/components/tracker-preview/tracker-preview-grid";
+import {Calender} from "@/src/components/charts/calender/Calender";
 
-const ONE_WEEK_MILLIS = 1000 * 60 * 60 * 24 * 6
 const Index = () => {
     const {trackerId} = useLocalSearchParams()
 
     if (typeof trackerId !== "string") return <Text>Something went wrong...</Text>
 
-    const now = new Date(Date.now() - ONE_WEEK_MILLIS)
-    const trackingDate:TrackingDate = {
-        year: now.getFullYear(),
-        month: now.getMonth()+1,
-        day: now.getDate()
-    }
+    const timeTracker = useGetTimeTracker(trackerId)
 
-    const analytics = useTimeTrackerGranularWeeklyAnalytics(trackerId, trackingDate)
+    const initialTrackingDate = plusDays(currentTrackingDate(), -6)
+
+    if (!timeTracker.data) return <Text>Loading...</Text>
+
+    console.log({data: timeTracker.data})
 
     return (
-        <>
-            {!analytics.data && <Text>Have not received</Text>}
-            {analytics.data && Array.from(Object.entries(analytics.data)).map(([name, value]) => {
-                return <Text key={name}>{name}: {JSON.stringify(value)}</Text>
-            })}
-            {analytics.data && (
-                <VictoryBar width={200} x="day" y="duration" data={analytics.data.dailyAnalytics.map((t, i) => ({duration: t.totalDuration, day: i}))} />
-            )}
-        </>
+        <YStack gap="$4">
+            <YStack>
+                <Title theme="h1">{timeTracker.data.name}</Title>
+                <Text>{timeTracker.data.description}</Text>
+            </YStack>
+            <Separator />
+            <TrackerPreviewGrid trackers={timeTracker.data.groups} />
+            <TimeTrackerWeeklyAnalyticsChart trackerId={trackerId} startDate={initialTrackingDate} />
+            <Calender year={2024} month={7} />
+        </YStack>
     )
 }
 

@@ -4,8 +4,10 @@ import {View} from "tamagui";
 
 export const PageContainer = ({children}: WithChildren) => {
     return (
-        <View padding="$4">
-            {children}
-        </View>
+        <SafeAreaView>
+            <View padding="$4">
+                {children}
+            </View>
+        </SafeAreaView>
     )
 }

@@ -11,6 +11,6 @@ const IconButtonBase = styled(Button, {
 
 export const IconButton = (props: IconButtonProps) => {
     return (
-        <IconButtonBase {...props} style={{backgroundColor: "blue"}} />
+        <IconButtonBase {...props}  />
     )
 }
