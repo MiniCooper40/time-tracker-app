@@ -1,4 +1,4 @@
-import {TrackingDate} from "@/src/features/analytics/types/TrackingDate";
+import {TrackingDate, TrackingMonth} from "@/src/features/analytics/types/TrackingDate";
 import dayjs, {Dayjs} from "dayjs";
 
 const startPaddedWithZero =  (value: number): string => {
@@ -74,11 +74,19 @@ export const detailedDayLabelsForWeekStarting = (trackingDate: TrackingDate) => 
     const {year, month, day} = trackingDate
     if (!year || !month || !day) return []
 
-    const weekStartMillis = new Date(year, month-1, day).getTime()
+    return [0,1,2,3,4,5,6].map(dayOfWeek => detailedLabelForDay(plusDays({
+        year,
+        month,
+        day
+    }, dayOfWeek)))
+}
 
-    return [0,1,2,3,4,5,6].map(day =>
-        new Date(weekStartMillis + day * ONE_DAY_MILLIS).toLocaleDateString('en-us', {month: "short", day: "numeric", year: "numeric"})
-    )
+export const detailedLabelForDay = (trackingDate: TrackingDate) => {
+    return trackingDateAsDayjs(trackingDate).toDate().toDateString()
+}
+
+export const labelForMonth = (trackingMonth: TrackingMonth) => {
+    return trackingDateAsDayjs({...trackingMonth, day: 1}).toDate().toLocaleDateString("en-us", {month: "long", year: "numeric"})
 }
 
 export const axisTicksForTrackedMillis = (milliseconds: number[] | number) => {
@@ -96,6 +104,10 @@ export const plusDays = (trackingDate: TrackingDate, days: number) => {
     return dayjsAsTrackingDate(trackingDateAsDayjs(trackingDate).add(days, "days"))
 }
 
+export const plusMonths = (trackingMonth: TrackingMonth, months: number) => {
+    return dayJsAsTrackingMonth(trackingDateAsDayjs(trackingMonth).date(1).add(months, "months"))
+}
+
 export const trackingDateAsDayjs = (trackingDate: TrackingDate) => {
     return dayjs()
         .year(trackingDate.year ?? 1)
@@ -103,9 +115,25 @@ export const trackingDateAsDayjs = (trackingDate: TrackingDate) => {
         .date(trackingDate.day ?? 1)
 }
 
+const dayJsAsTrackingMonth = (date: Dayjs) => {
+    return {
+        month: date.month() + 1,
+        year: date.year()
+    }
+}
 export const currentTrackingDate = () => {
     return dayjsAsTrackingDate(dayjs())
 }
+
+export const currentTrackingMonth = (): TrackingMonth => {
+    const now = dayjs()
+    return {
+        month: now.month() + 1,
+        year: now.year()
+    }
+}
+
+export const startOfCurrentTrackingWeek = () => plusDays(currentTrackingDate(), -6)
 
 export const dayjsAsTrackingDate = (day: Dayjs) => {
     return {
@@ -142,11 +170,11 @@ export const weeksInMonth = (year: number, month: number) => {
 }
 
 export const daysInMonth = (year: number, month: number) => {
-    return dayjs().year(year).month(month).day(1).daysInMonth();
+    return dayjs().year(year).month(month-1).date(1).daysInMonth()
 }
 
 export const firstDayOfMonth = (year: number, month: number) => {
-    return dayjs().year(year).month(month).day(1).day() + 1;
+    return dayjs().year(year).month(month-1).date(1).day() + 1;
 }
 
 export const asLocalDateTime = (milliseconds: number) => {

@@ -16,7 +16,6 @@ export const TimeTrackerCard = (props: TimeTrackerCardProps) => {
     const router = useRouter()
 
     const routeToTimeTracker = () => {
-        console.log("routing to", timeTracker.trackerId)
         router.push(`/time-trackers/${timeTracker.trackerId}`)
     }
 

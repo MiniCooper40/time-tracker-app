@@ -3,3 +3,8 @@ export interface TrackingDate {
     month?: number;
     day?: number;
 }
+
+export interface TrackingMonth {
+    year: number;
+    month: number;
+}

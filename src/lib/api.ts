@@ -3,7 +3,6 @@ import {supabase} from "@/src/lib/supabase";
 
 import Constants from "expo-constants";
 
-const { expoConfig } = Constants;
 
 const baseURL = Constants.expoConfig?.hostUri
     ? "http://" + Constants.expoConfig?.hostUri.split(`:`)?.shift()?.concat(`:8080/`)

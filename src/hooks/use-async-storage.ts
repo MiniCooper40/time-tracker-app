@@ -7,11 +7,9 @@ export const useAsyncStorage = (key: string) => {
     useEffect(() => {
         AsyncStorage.getItem(key)
             .then(result => {
-                console.log("got async item", result)
                 if (result) _setValue(result)
             })
             .catch(() => {
-                console.log("item does not exist")
                 _setValue(undefined)
             })
             .finally(() => setLoading(false))

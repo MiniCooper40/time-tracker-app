@@ -1,6 +1,6 @@
 import {AnalyticsGranularity, AnalyticsScope} from "@/src/features/analytics/types/analytics-request";
-import {TrackingDate} from "@/src/features/analytics/types/TrackingDate"
-import {useQuery} from "react-query";
+import {TrackingDate, TrackingMonth} from "@/src/features/analytics/types/TrackingDate"
+import {QueryKey, useQuery} from "react-query";
 import {api} from "@/src/lib/api";
 import {queryParamsFrom} from "@/src/util/url";
 import {
@@ -23,7 +23,6 @@ type TimeTrackerAnalyticsRequest = {
 
 function getTimeTrackerAnalytics<T>({trackerId, granularity, date, scope }: TimeTrackerAnalyticsRequest): Promise<T> {
     const url = `time-tracker/${trackerId}/analytics?${queryParamsFrom({granularity, scope, ...date, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone})}`
-    console.log("got url", url)
     return api.get(url)
 }
 
@@ -33,7 +32,7 @@ export const useTimeTrackerGranularDailyAnalytics = (trackerId: string, date: Tr
         date,
         granularity: "GRANULAR",
         scope: "DAILY"
-    })
+    }, [trackerId, "DAILY", date])
 }
 
 export const useTimeTrackerOverviewDailyAnalytics = (trackerId: string, date: TrackingDate) => {
@@ -42,7 +41,7 @@ export const useTimeTrackerOverviewDailyAnalytics = (trackerId: string, date: Tr
         date,
         granularity: "OVERVIEW",
         scope: "DAILY"
-    })
+    }, [trackerId, "DAILY", date])
 }
 
 export const useTimeTrackerGranularWeeklyAnalytics = (trackerId: string, startDate: TrackingDate) => {
@@ -51,7 +50,7 @@ export const useTimeTrackerGranularWeeklyAnalytics = (trackerId: string, startDa
         date: startDate,
         granularity: "GRANULAR",
         scope: "WEEKLY"
-    })
+    }, [trackerId, "WEEKLY", startDate])
 }
 
 export const useTimeTrackerOverviewWeeklyAnalytics = (trackerId: string, startDate: TrackingDate) => {
@@ -60,16 +59,18 @@ export const useTimeTrackerOverviewWeeklyAnalytics = (trackerId: string, startDa
         date: startDate,
         granularity: "OVERVIEW",
         scope: "WEEKLY"
-    })
+    },
+        [trackerId, "WEEKLY", startDate])
 }
 
-export const useTimeTrackerGranularMonthlyAnalytics = (trackerId: string, startDate: TrackingDate) => {
+export const useTimeTrackerGranularMonthlyAnalytics = (trackerId: string, month: TrackingMonth) => {
     return useTimeTrackerAnalytics<TimeTrackerGranularMonthlyAnalytics>({
         trackerId,
-        date: startDate,
+        date: month,
         granularity: "GRANULAR",
         scope: "MONTHLY"
-    })
+    },
+        [trackerId, "MONTHLY", month])
 }
 
 export const useTimeTrackerOverviewMonthlyAnalytics = (trackerId: string, startDate: TrackingDate) => {
@@ -78,7 +79,8 @@ export const useTimeTrackerOverviewMonthlyAnalytics = (trackerId: string, startD
         date: startDate,
         granularity: "OVERVIEW",
         scope: "MONTHLY"
-    })
+    },
+        [trackerId, "MONTHLY", startDate])
 }
 
 export const useTimeTrackerGranularYearlyAnalytics = (trackerId: string, startDate: TrackingDate) => {
@@ -87,7 +89,8 @@ export const useTimeTrackerGranularYearlyAnalytics = (trackerId: string, startDa
         date: startDate,
         granularity: "GRANULAR",
         scope: "YEARLY"
-    })
+    },
+        [trackerId, "YEARLY", startDate])
 }
 
 export const useTimeTrackerOverviewYearlyAnalytics = (trackerId: string, startDate: TrackingDate) => {
@@ -96,12 +99,14 @@ export const useTimeTrackerOverviewYearlyAnalytics = (trackerId: string, startDa
         date: startDate,
         granularity: "OVERVIEW",
         scope: "YEARLY"
-    })
+    },
+        [trackerId, "YEARLY", startDate])
 }
 
-function useTimeTrackerAnalytics<T>(analyticsRequest: TimeTrackerAnalyticsRequest) {
+function useTimeTrackerAnalytics<T>(analyticsRequest: TimeTrackerAnalyticsRequest, queryKeys: readonly unknown[] = []) {
+    console.log("querying with keys: ", ["analytics", ...queryKeys])
     return useQuery<T, any>({
         queryFn: () => getTimeTrackerAnalytics<T>(analyticsRequest),
-        queryKey: ["analytics", ...Array.from(Object.values(analyticsRequest))]
+        queryKey: ["analytics", ...queryKeys]
     })
 }

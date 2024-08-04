@@ -12,9 +12,10 @@ interface BarChartBarProps {
     height: number;
     color?: string;
     pressed?: boolean;
+    opacity?: number;
 }
 
-const BarChartBar = ({x, y, width, height, color="purple", pressed}: BarChartBarProps) => {
+const BarChartBar = ({x, y, width, height, color="purple", pressed, opacity=1}: BarChartBarProps) => {
 
 
     const currentHeight = useSharedValue(0)
@@ -25,7 +26,7 @@ const BarChartBar = ({x, y, width, height, color="purple", pressed}: BarChartBar
     })
 
 
-    return <RoundedRect r={0} x={x} y={y} width={width} height={currentHeight} color={!pressed ? color : "lightgrey"} />
+    return <RoundedRect r={0} x={x} y={y} width={width} height={currentHeight} color={color} opacity={opacity} />
 }
 
 export {BarChartBar}

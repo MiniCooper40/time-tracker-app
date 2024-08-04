@@ -1,13 +1,8 @@
-import {RoundedRect, SkFont, Text, vec, Vertices} from "@shopify/react-native-skia";
+import {RoundedRect, SkFont, SkRect, Text, vec, Vertices} from "@shopify/react-native-skia";
 import {useMemo} from "react";
-import {pad} from "ansi-fragments";
-import {distance} from "popmotion";
 
 interface SkTooltipProps {
-    containerX: number;
-    containerY: number;
-    containerWidth: number,
-    containerHeight: number,
+    containerRect: SkRect;
     color?: string;
     title?: string;
     titleFont: SkFont | null;
@@ -22,11 +17,9 @@ interface SkTooltipProps {
 }
 
 const SkTooltip = ({
-                       containerX,
-                       containerY,
-                       containerWidth,
-                       containerHeight,
+                       containerRect,
                        color = "white",
+                       entryFont,
                        titleFont,
                        title = "Tooltip",
                        padding = 3,
@@ -36,46 +29,41 @@ const SkTooltip = ({
                        arrowHeight = 16,
                        entries = [],
                        entrySpacing = 2,
-                       entryFont = titleFont
                    }: SkTooltipProps) => {
+    if (!titleFont || !entryFont) return undefined
 
-    console.log("top of tooltip", {containerX: containerX, containerY: containerY, color, entries, title})
-
-    if (!titleFont) return undefined
-
-    const titleRect = titleFont.measureText(title)
-    const entryRects = entries.map(text => entryFont?.measureText(text) ?? titleFont.measureText(text))
-    const tooltipWidth = useMemo(() => Math.max(titleRect.width, ...entryRects.map(({width}) => width)) + padding * 2, [padding, entryRects, titleRect])
-    const tooltipHeight = titleRect.height + padding * 2 + entryRects.map(({height}) => height).reduce((prev, cur) => prev + cur, 0) + entryRects.length * entrySpacing
-
-    const tooltipX = useMemo(() => {
-        switch (positionHorizontal) {
-            case "right":
-                return containerX + distanceFromCenter + containerWidth + arrowHeight;
-            case "left":
-                return containerX - tooltipWidth  - distanceFromCenter - arrowHeight;
-        }
-    }, [containerX, tooltipWidth, containerHeight, distanceFromCenter, positionHorizontal])
-
-    const tooltipY = useMemo(() => {
-        switch (positionVertical) {
-            case "top":
-                return containerY + containerHeight/2 - tooltipHeight + arrowHeight;
-            case "bottom":
-                return containerY + containerHeight/2 - arrowHeight;
-            default:
-                return containerY + containerHeight/2 - tooltipHeight/2
-        }
-    }, [positionHorizontal, containerY, tooltipHeight])
+    const titleRect = useMemo(() => titleFont.measureText(title), [titleFont])
+    const entryRects = useMemo(() => entries.map(text => entryFont.measureText(text)), [entries, entryFont])
 
     const tooltipRect = useMemo(() => {
+        const tooltipWidth = Math.max(titleRect.width, ...entryRects.map(({width}) => width)) + padding * 2
+        const tooltipHeight = titleRect.height + padding * 2 + entryRects.map(({height}) => height).reduce((prev, cur) => prev + cur, 0) + entryRects.length * entrySpacing
+        const tooltipX = (() => {
+            switch (positionHorizontal) {
+                case "right":
+                    return containerRect.x + distanceFromCenter + containerRect.width + arrowHeight;
+                case "left":
+                    return containerRect.x - tooltipWidth  - distanceFromCenter - arrowHeight;
+            }
+        })()
+        const tooltipY = (() => {
+            switch (positionVertical) {
+                case "top":
+                    return containerRect.y + containerRect.height/2 - tooltipHeight + arrowHeight;
+                case "bottom":
+                    return containerRect.y + containerRect.height/2 - arrowHeight;
+                default:
+                    return containerRect.y + containerRect.height/2 - tooltipHeight/2
+            }
+        })()
+        
         return {
             width: tooltipWidth,
             height: tooltipHeight,
             x: tooltipX,
             y: tooltipY
-        }
-    }, [titleRect, tooltipHeight, tooltipWidth, tooltipX, tooltipY])
+        } as SkRect
+    }, [titleRect, positionHorizontal, positionVertical, containerRect.x, containerRect.y, containerRect.width, containerRect.height])
 
     const titlePosition = useMemo(() => {
         return {
@@ -96,20 +84,9 @@ const SkTooltip = ({
         })
     }, [titlePosition])
 
-    const arrowInset = 6
-    //
-    // const diffY = useMemo(() => {
-    //     // switch(positionVertical) {
-    //     //     case "center": return 0
-    //     //     case "bottom": return tooltipRect.height / 2
-    //     //     case "top": return -tooltipRect.height / 2
-    //     // }
-    //     return 0
-    // }, [positionVertical])
-
     const arrowVertices = useMemo(() => {
         const sideX = tooltipRect.x + tooltipRect.width
-        const centerY = containerY + containerHeight/2 //tooltipRect.y + tooltipRect.height/2
+        const centerY = containerRect.y + containerRect.height/2
         return [
             vec(sideX, centerY - arrowHeight/2),
             vec(sideX, centerY + arrowHeight/2 ),
@@ -125,8 +102,6 @@ const SkTooltip = ({
             return arrowVertices.map(({x, y}) => vec(tooltipCenterX - (x - tooltipCenterX), y))
         }
     }, [positionHorizontal, tooltipRect, arrowVertices])
-
-    console.log("in tooltip", {tooltipRect, entries, title, titlePosition})
 
     return (
         <>

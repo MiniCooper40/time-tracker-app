@@ -2,6 +2,7 @@ import {TrackedTime} from "@/src/types/Time";
 import {api} from "@/src/lib/api";
 import {MutationOptions, useMutation} from "react-query";
 import {queryClient} from "@/src/lib/reactQuery";
+import {currentTrackingDate, currentTrackingMonth, startOfCurrentTrackingWeek} from "@/src/util/time";
 
 export interface TrackedTimeInput {
     startTime: string;
@@ -24,7 +25,16 @@ export const useSaveTrackedTime = (trackerId: string, options: TrackTimeMutation
         mutationFn: (trackedTime: TrackedTimeInput) => saveTrackedTime(trackerId, trackedTime),
         ...options,
         onSuccess: (...args) => {
-            queryClient.invalidateQueries({queryKey: ["analytics"]}).then(console.log)
+            const currentDay = currentTrackingDate()
+            console.log("invalidating keys: ", JSON.stringify(["analytics", trackerId, "MONTHLY", currentTrackingMonth()]))
+            queryClient.resetQueries({
+                queryKey: ["analytics", trackerId, "MONTHLY", currentTrackingMonth()],
+                exact: true
+            })
+            queryClient.resetQueries({
+                queryKey: ["analytics", trackerId, "WEEKLY", startOfCurrentTrackingWeek()],
+                exact: true
+            })
             options.onSuccess?.(...args)
         },
     })
