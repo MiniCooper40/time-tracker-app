@@ -8,7 +8,6 @@ interface TrackerPreviewGridProps {
 export const TrackerPreviewGrid = ({trackers}: TrackerPreviewGridProps) => {
     return (
         <XStack
-            size="$3"
             gap="$3"
             flexWrap="wrap"
         >

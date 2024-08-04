@@ -20,7 +20,7 @@ const Layout = () => {
                     backgroundColor: theme.background?.get(),
                     elevation: 0
                 },
-                tabBarActiveTintColor: theme.colorFocus?.get(),
+                tabBarActiveTintColor: "black",
                 headerStyle: {
                     height: 70
                 },

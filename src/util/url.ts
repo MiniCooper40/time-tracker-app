@@ -7,6 +7,5 @@ export const queryParamsFrom = (obj: Parameterizable) => {
     Object.entries(obj).forEach(([key,value]) => {
         if (value) params.append(key, value.toString())
     })
-    console.log(Array.from(params.entries()))
     return params.toString()
 }

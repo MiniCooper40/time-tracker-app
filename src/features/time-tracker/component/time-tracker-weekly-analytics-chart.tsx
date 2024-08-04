@@ -6,26 +6,34 @@ import {
     shortDayLabelsForWeekStarting,
     millisecondsToCompressedTimestamp,
     millisecondsToTimestamp,
-    ONE_DAY_MILLIS, ONE_HOUR_MILLIS, detailedDayLabelsForWeekStarting, plusWeeks, weekLabel
+    ONE_DAY_MILLIS,
+    ONE_HOUR_MILLIS,
+    detailedDayLabelsForWeekStarting,
+    plusWeeks,
+    weekLabel,
+    plusDays,
+    currentTrackingDate, startOfCurrentTrackingWeek
 } from "@/src/util/time";
 import {BarChart} from "@/src/components/charts/bar-chart/BarChart";
 import {ChartNavigation} from "@/src/components/charts/ChartNavigation";
 import {useState} from "react";
+import TimeTrackers from "@/app/(app)/(root)/time-trackers/(time-trackers)";
 
 interface TimeTrackerWeeklyAnalyticsChartProps {
-    trackerId: string;
-    startDate: TrackingDate
+    timeTracker: TimeTracker;
+    startDate?: TrackingDate
 }
 
 const emptyData = new Array(7).fill(0);
 
-const TimeTrackerWeeklyAnalyticsChart = ({trackerId, startDate}: TimeTrackerWeeklyAnalyticsChartProps) => {
+const TimeTrackerWeeklyAnalyticsChart = ({
+                                             timeTracker,
+                                             startDate = startOfCurrentTrackingWeek()
+                                         }: TimeTrackerWeeklyAnalyticsChartProps) => {
 
     const [week, setWeek] = useState<TrackingDate>(startDate)
 
-    console.log({week})
-
-    const analytics = useTimeTrackerGranularWeeklyAnalytics(trackerId, week)
+    const analytics = useTimeTrackerGranularWeeklyAnalytics(timeTracker.trackerId, week)
     const dayLabels = shortDayLabelsForWeekStarting(startDate)
     const detailedDayLabels = detailedDayLabelsForWeekStarting(week)
     const dailyAnalytics = analytics.data?.dailyAnalytics ?? emptyData.map(() => ({
@@ -46,11 +54,14 @@ const TimeTrackerWeeklyAnalyticsChart = ({trackerId, startDate}: TimeTrackerWeek
     const nextWeek = () => setWeek(prev => plusWeeks(prev, 1))
     const previousWeek = () => setWeek(prev => plusWeeks(prev, -1))
 
-    const ticks = axisTicksForTrackedMillis(Math.max(...weeklyData.map(({value}) => value))).map(value => ({value, label: millisecondsToCompressedTimestamp(value)}))
+    const ticks = axisTicksForTrackedMillis(Math.max(...weeklyData.map(({value}) => value))).map(value => ({
+        value,
+        label: millisecondsToCompressedTimestamp(value)
+    }))
 
     return (
         <ChartNavigation title={weekLabel(week)} onIncrement={nextWeek} onDecrement={previousWeek}>
-            {<BarChart ticks={ticks} data={weeklyData} loading={analytics.isLoading} />}
+            {<BarChart ticks={ticks} data={weeklyData} loading={analytics.isLoading} color={timeTracker.color}/>}
         </ChartNavigation>
     )
 }

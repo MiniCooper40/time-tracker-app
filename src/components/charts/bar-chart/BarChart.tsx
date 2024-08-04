@@ -1,4 +1,4 @@
-import {Canvas, Group, Path, Skia, useFont} from "@shopify/react-native-skia";
+import {Canvas, Group, Path, Skia, SkRect, useFont} from "@shopify/react-native-skia";
 import {View} from "tamagui";
 import {useMemo, useState} from "react";
 import {BarChartBar} from "@/src/components/charts/bar-chart/BarChartBar";
@@ -37,6 +37,7 @@ interface BarChartProps {
     labelPadding?: number;
     tickLabelWidth?: number;
     loading?: boolean;
+    color?: string;
 }
 
 const BarChart = ({
@@ -47,7 +48,8 @@ const BarChart = ({
                       barSpacing = 30,
                       labelPadding = 4,
                       tickLabelWidth = 40,
-                      loading = false
+                      loading = false,
+                      color
                   }: BarChartProps) => {
 
     const [pressedBarIndex, setPressedBarIndex] = useState<number | undefined>()
@@ -98,7 +100,7 @@ const BarChart = ({
             y: chartY - (chartY * (value / maxY)) + overflowTopCorrection,
             width: barWidth,
             height: chartY * (value / maxY)
-        }))
+        } as SkRect))
     }, [barWidth, overflowTopCorrection, maxY])
 
     const updateCanvasDimensions = (e: LayoutChangeEvent) => {
@@ -125,7 +127,7 @@ const BarChart = ({
     }
     const handleTouchEnd = () => setPressedBarIndex(undefined)
 
-    const gesture = Gesture.LongPress().minDuration(50).onStart(handleStartLongPress).onTouchesMove(handleTouchMove).onFinalize(handleTouchEnd)
+    const longPressGesture = Gesture.LongPress().minDuration(100).onStart(handleStartLongPress).onTouchesMove(handleTouchMove).onFinalize(handleTouchEnd)
 
     const xAxisPath = useMemo(() => {
         const path = Skia.Path.Make()
@@ -142,15 +144,15 @@ const BarChart = ({
     }, [chartX, barSpacing, chartWidth, chartBottom])
 
     return (
-        <GestureDetector gesture={gesture}>
+        <GestureDetector gesture={longPressGesture}>
             <View width="100%" height={chartY + 50}>
                 <Canvas style={{flex: 1}} onLayout={updateCanvasDimensions}>
                     {layout.width !== 0 && labelFont && tooltipBodyFont && tooltipTitleFont && (
                         <Group>
                             {!loading && data.map(({value, label}, index) => (
-                                <BarChartBar pressed={pressedBarIndex === index} color="grey" key={label}
+                                <BarChartBar color={color ?? "grey"} key={label}
                                              x={chartX + barSpacing * (index + 1) + (barWidth * index)} y={chartBottom}
-                                             width={barWidth} height={chartY * (value / maxY)}/>
+                                             width={barWidth} height={chartY * (value / maxY)} opacity={index === pressedBarIndex ? 0.6 : 1} />
                             ))}
                             {labelFont && data.map(({value, label}, i) => {
                                 const barCenter = barCenters[i]
@@ -175,14 +177,11 @@ const BarChart = ({
                                     positionVertical={"center"}
                                     titleFont={tooltipTitleFont}
                                     entryFont={tooltipBodyFont}
-                                    containerX={barPositions[pressedBarIndex].x}
-                                    containerY={barPositions[pressedBarIndex].y}
+                                    containerRect={barPositions[pressedBarIndex]}
                                     title={data[pressedBarIndex].detailedLabel}
                                     padding={6}
                                     entries={data[pressedBarIndex].tooltipEntries}
                                     entrySpacing={6}
-                                    containerHeight={barPositions[pressedBarIndex].height}
-                                    containerWidth={barPositions[pressedBarIndex].width}
                                 />
                             )}
                             <Path path={xAxisPath} color="grey" style="stroke"/>

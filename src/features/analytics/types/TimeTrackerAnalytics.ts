@@ -23,8 +23,8 @@ export type TimeTrackerGranularWeeklyAnalytics = {
     dailyAnalytics: TimeTrackerOverviewDailyAnalytics[]
 } & TimeTrackerOverviewWeeklyAnalytics;
 
-export type TimeTrackerOverviewMonthlyAnalytics = TimeTrackerOverviewWeeklyAnalytics;
-export type TimeTrackerGranularMonthlyAnalytics = TimeTrackerGranularWeeklyAnalytics;
+export type TimeTrackerOverviewMonthlyAnalytics = {} & TimeTrackerOverviewWeeklyAnalytics;
+export type TimeTrackerGranularMonthlyAnalytics = {} & TimeTrackerGranularWeeklyAnalytics;
 
 export type TimeTrackerOverviewYearlyAnalytics = {
     year: number;
