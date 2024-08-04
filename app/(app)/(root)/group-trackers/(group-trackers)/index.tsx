@@ -4,6 +4,7 @@ import {useGetUsersGroupTrackers} from "@/src/features/group-tracker/api/use-get
 import {SafeAreaView} from "react-native-safe-area-context";
 import {GroupTrackerList} from "@/src/features/group-tracker/components/group-tracker-list";
 import {PageContainer} from "@/src/components/layouts/PageContainer";
+import {TrackerPreviewGrid} from "@/src/components/tracker-preview/tracker-preview-grid";
 
 const Page = () => {
     const user = useUser()

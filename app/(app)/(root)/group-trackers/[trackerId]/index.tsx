@@ -12,26 +12,29 @@ import {Calender} from "@/src/components/charts/calender/Calender";
 import {useTimeTrackerGranularMonthlyAnalytics} from "@/src/features/analytics/api/time-tracker-analytics";
 import {TimeTrackerOverviewDailyAnalytics} from "@/src/features/analytics/types/TimeTrackerAnalytics";
 import {TimeTrackerMonthlyHeatmap} from "@/src/features/time-tracker/component/time-tracker-monthly-heatmap";
+import {useGetGroupTracker} from "@/src/features/group-tracker/api/use-get-group-tracker";
+import {GroupTrackerBarChart} from "@/src/features/group-tracker/components/group-tracker-bar-chart";
 
 const Index = () => {
     const {trackerId} = useLocalSearchParams()
 
     if (typeof trackerId !== "string") return <Text>Something went wrong...</Text>
 
-    const getTimeTracker = useGetTimeTracker(trackerId)
+    const getGroupTracker = useGetGroupTracker(trackerId)
 
 
-    if (!getTimeTracker.data) return <Text>Loading...</Text>
+    if (!getGroupTracker.data) return <Text>Loading...</Text>
 
     return (
         <YStack gap="$4">
             <YStack>
-                <Title theme="h1">{getTimeTracker.data.name}</Title>
-                <Text>{getTimeTracker.data.description}</Text>
+                <Title theme="h1">{getGroupTracker.data.name}</Title>
+                <Text>{getGroupTracker.data.description}</Text>
             </YStack>
             <Separator />
-            <TimeTrackerWeeklyAnalyticsChart timeTracker={getTimeTracker.data} />
-            <TimeTrackerMonthlyHeatmap timeTracker={getTimeTracker.data} />
+
+            <TrackerPreviewGrid trackers={getGroupTracker.data.trackers} />
+            <GroupTrackerBarChart groupTracker={getGroupTracker.data} />
         </YStack>
     )
 }

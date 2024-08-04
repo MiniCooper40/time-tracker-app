@@ -42,7 +42,12 @@ const TimeTrackerWeeklyAnalyticsChart = ({
     }))
     const weeklyData = dailyAnalytics
         .map((t, i) => ({
-            value: t.totalDuration,
+            sections: [
+                {
+                    value: t.totalDuration,
+                    color: timeTracker.color
+                }
+            ],
             label: dayLabels[i],
             detailedLabel: detailedDayLabels[i],
             tooltipEntries: [
@@ -54,7 +59,7 @@ const TimeTrackerWeeklyAnalyticsChart = ({
     const nextWeek = () => setWeek(prev => plusWeeks(prev, 1))
     const previousWeek = () => setWeek(prev => plusWeeks(prev, -1))
 
-    const ticks = axisTicksForTrackedMillis(Math.max(...weeklyData.map(({value}) => value))).map(value => ({
+    const ticks = axisTicksForTrackedMillis(Math.max(...weeklyData.map(({sections}) => sections[0].value))).map(value => ({
         value,
         label: millisecondsToCompressedTimestamp(value)
     }))

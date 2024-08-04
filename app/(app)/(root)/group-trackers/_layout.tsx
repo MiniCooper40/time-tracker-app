@@ -1,13 +1,13 @@
-import {PageContainer} from "@/src/components/layouts/PageContainer";
-import {Slot} from "expo-router";
-import {ScrollView} from "tamagui";
+import {Stack} from "expo-router";
+
 
 const Layout = () => {
-    return <ScrollView>
-        <PageContainer>
-            <Slot />
-        </PageContainer>
-    </ScrollView>
+    return (
+        <Stack screenOptions={{headerShown: false}}>
+            <Stack.Screen name="(group-trackers)" />
+            <Stack.Screen name="[trackerId]" options={{presentation: "fullScreenModal"}}/>
+        </Stack>
+    )
 }
 
 export default Layout

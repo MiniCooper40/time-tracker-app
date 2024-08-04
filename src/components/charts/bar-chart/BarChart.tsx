@@ -15,6 +15,7 @@ import {
     GestureStateManagerType
 } from "react-native-gesture-handler/lib/typescript/handlers/gestures/gestureStateManager";
 import {SkTooltip} from "@/src/components/charts/SkTooltip";
+import {sum} from "@/src/util/math";
 
 interface BarChartTick {
     value: number;
@@ -22,11 +23,18 @@ interface BarChartTick {
 }
 
 interface BarChartEntry {
-    value: number;
+    sections: {
+        value: number,
+        color: string
+    }[];
     label: string | number;
     detailedLabel: string;
     tooltipEntries?: string[]
 }
+
+type CalculatedBarChartEntry = {
+    totalValue: number;
+} & BarChartEntry
 
 interface BarChartProps {
     data: BarChartEntry[]
@@ -41,7 +49,7 @@ interface BarChartProps {
 }
 
 const BarChart = ({
-                      data,
+                      data: initialData,
                       ticks,
                       width = 300,
                       height = 300,
@@ -52,10 +60,15 @@ const BarChart = ({
                       color
                   }: BarChartProps) => {
 
+    const calculatedData: CalculatedBarChartEntry[] = useMemo(() => initialData.map(data => ({
+        ...data,
+        totalValue: sum(...data.sections.map(({value}) => value))
+    })), [initialData])
+
     const [pressedBarIndex, setPressedBarIndex] = useState<number | undefined>()
 
     const maxTick = useMemo(() => Math.max(...ticks.map(({value}) => value)), [ticks])
-    const maxValue = useMemo(() => Math.max(...data.map(({value}) => value)), [data])
+    const maxValue = useMemo(() => Math.max(...calculatedData.map(({totalValue}) => totalValue)), [calculatedData])
     const maxY = useMemo(() => Math.max(maxTick, maxValue), [maxTick, maxValue])
 
     const [layout, setLayout] = useState<{ width: number, height: number }>({width: 0, height: 0})
@@ -69,12 +82,12 @@ const BarChart = ({
 
     const barWidth = useMemo(() => {
         if (chartWidth === 0) return 0
-        const totalSpacing = barSpacing * (data.length + 1)
-        return Math.floor((chartWidth - totalSpacing) / data.length)
-    }, [layout.width, data, barSpacing])
+        const totalSpacing = barSpacing * (calculatedData.length + 1)
+        return Math.floor((chartWidth - totalSpacing) / calculatedData.length)
+    }, [layout.width, calculatedData, barSpacing])
 
     const barCenters = useMemo(() => {
-        return Array(data.length).fill(0).map((_, i) => {
+        return Array(calculatedData.length).fill(0).map((_, i) => {
             const totalSpacingWidths = barSpacing * (i + 1)
             const totalBarWidths = (barWidth * i) + Math.ceil(barWidth / 2)
             return totalSpacingWidths + totalBarWidths
@@ -95,11 +108,11 @@ const BarChart = ({
     const chartBottom = useMemo(() => height, [overflowTopCorrection, height])
 
     const barPositions = useMemo(() => {
-        return data.map(({value}, index) => ({
+        return calculatedData.map(({totalValue}, index) => ({
             x: chartX + barSpacing * (index + 1) + (barWidth * index),
-            y: chartY - (chartY * (value / maxY)) + overflowTopCorrection,
+            y: chartBottom - (height * (totalValue / maxY)),
             width: barWidth,
-            height: chartY * (value / maxY)
+            height: height * (totalValue / maxY)
         } as SkRect))
     }, [barWidth, overflowTopCorrection, maxY])
 
@@ -149,12 +162,14 @@ const BarChart = ({
                 <Canvas style={{flex: 1}} onLayout={updateCanvasDimensions}>
                     {layout.width !== 0 && labelFont && tooltipBodyFont && tooltipTitleFont && (
                         <Group>
-                            {!loading && data.map(({value, label}, index) => (
-                                <BarChartBar color={color ?? "grey"} key={label}
-                                             x={chartX + barSpacing * (index + 1) + (barWidth * index)} y={chartBottom}
-                                             width={barWidth} height={chartY * (value / maxY)} opacity={index === pressedBarIndex ? 0.6 : 1} />
+                            {!loading && barPositions.map((position, barIndex) => (
+                                <BarChartBar  key={`${barIndex}`}
+                                             x={position.x} y={position.y}
+                                             width={position.width} height={position.height}
+                                              sections={calculatedData[barIndex].sections}
+                                             opacity={barIndex === pressedBarIndex ? 0.6 : 1}/>
                             ))}
-                            {labelFont && data.map(({value, label}, i) => {
+                            {labelFont && calculatedData.map(({label}, i) => {
                                 const barCenter = barCenters[i]
                                 const labelRect = labelFont.measureText(label.toString())
                                 const labelX = chartX + barCenter - Math.floor(labelRect.width / 2)
@@ -173,14 +188,14 @@ const BarChart = ({
                             }
                             {pressedBarIndex !== undefined && (
                                 <SkTooltip
-                                    positionHorizontal={pressedBarIndex > data.length / 2 ? "left" : "right"}
+                                    positionHorizontal={pressedBarIndex > calculatedData.length / 2 ? "left" : "right"}
                                     positionVertical={"center"}
                                     titleFont={tooltipTitleFont}
                                     entryFont={tooltipBodyFont}
                                     containerRect={barPositions[pressedBarIndex]}
-                                    title={data[pressedBarIndex].detailedLabel}
+                                    title={calculatedData[pressedBarIndex].detailedLabel}
                                     padding={6}
-                                    entries={data[pressedBarIndex].tooltipEntries}
+                                    entries={calculatedData[pressedBarIndex].tooltipEntries}
                                     entrySpacing={6}
                                 />
                             )}
