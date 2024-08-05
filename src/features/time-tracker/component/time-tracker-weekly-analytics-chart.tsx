@@ -52,7 +52,7 @@ const TimeTrackerWeeklyAnalyticsChart = ({
             detailedLabel: detailedDayLabels[i],
             tooltipEntries: [
                 `Sessions: ${t.numberOfSessions}`,
-                `Time tracked: ${millisecondsToCompressedTimestamp(t.totalDuration)}`
+                `Tracked: ${millisecondsToCompressedTimestamp(t.totalDuration)}`
             ]
         })) ?? []
 
@@ -66,7 +66,7 @@ const TimeTrackerWeeklyAnalyticsChart = ({
 
     return (
         <ChartNavigation title={weekLabel(week)} onIncrement={nextWeek} onDecrement={previousWeek}>
-            {<BarChart ticks={ticks} data={weeklyData} loading={analytics.isLoading} color={timeTracker.color}/>}
+            {<BarChart ticks={ticks} data={weeklyData} loading={analytics.isLoading} barSpacing={25} color={timeTracker.color}/>}
         </ChartNavigation>
     )
 }

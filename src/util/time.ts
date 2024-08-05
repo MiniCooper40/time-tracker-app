@@ -1,7 +1,7 @@
 import {TrackingDate, TrackingMonth} from "@/src/features/analytics/types/TrackingDate";
 import dayjs, {Dayjs} from "dayjs";
 
-const startPaddedWithZero =  (value: number): string => {
+const startPaddedWithZero = (value: number): string => {
     if (value < 10) return `0${value}`
     else return value.toString()
 }
@@ -38,7 +38,7 @@ export const millisecondsToCompressedTimestamp = (millis: number | undefined): s
     let s = ""
     if (seconds > 0) s = `${seconds}s`
     if (minutes > 0) s = `${minutes}m${s}`
-    if(hours > 0) s = `${hours}h${s}`
+    if (hours > 0) s = `${hours}h${s}`
     return s
 }
 
@@ -60,12 +60,17 @@ export const millisecondsToTimestamp = (millis: number | undefined): string => {
 export const weekLabel = (trackingDate: TrackingDate) => {
     const {year, month, day} = trackingDate
     if (!year || !month || !day) return ""
-    return `Week of ${trackingDateAsDate(trackingDate).toLocaleDateString("en-us", { weekday: "short", month: "long", day: "numeric", year: "numeric",})}`
+    return `Week of ${trackingDateAsDate(trackingDate).toLocaleDateString("en-us", {
+        weekday: "short",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+    })}`
 }
 
 export const shortDayLabelsForWeekStarting = (trackingDate: TrackingDate) => {
     const date = trackingDateAsDayjs(trackingDate)
-    return [0,1,2,3,4,5,6].map(day =>
+    return [0, 1, 2, 3, 4, 5, 6].map(day =>
         date.add(day, "days").format("dd")
     )
 }
@@ -74,7 +79,7 @@ export const detailedDayLabelsForWeekStarting = (trackingDate: TrackingDate) => 
     const {year, month, day} = trackingDate
     if (!year || !month || !day) return []
 
-    return [0,1,2,3,4,5,6].map(dayOfWeek => detailedLabelForDay(plusDays({
+    return [0, 1, 2, 3, 4, 5, 6].map(dayOfWeek => detailedLabelForDay(plusDays({
         year,
         month,
         day
@@ -86,13 +91,33 @@ export const detailedLabelForDay = (trackingDate: TrackingDate) => {
 }
 
 export const labelForMonth = (trackingMonth: TrackingMonth) => {
-    return trackingDateAsDayjs({...trackingMonth, day: 1}).toDate().toLocaleDateString("en-us", {month: "long", year: "numeric"})
+    return trackingDateAsDayjs({...trackingMonth, day: 1}).toDate().toLocaleDateString("en-us", {
+        month: "long",
+        year: "numeric"
+    })
 }
 
 export const axisTicksForTrackedMillis = (milliseconds: number[] | number) => {
     const maxMilliseconds = typeof milliseconds === "number" ? milliseconds : Math.max(...milliseconds)
+    const valuePerTick = Math.floor((() => {
+        if (maxMilliseconds < ONE_SECOND_MILLIS * 5) return ONE_SECOND_MILLIS
+        if (maxMilliseconds < ONE_SECOND_MILLIS * 30) return ONE_SECOND_MILLIS * 5
+        if (maxMilliseconds < ONE_MINUTE_MILLIS) return ONE_SECOND_MILLIS * 10
+        if (maxMilliseconds < ONE_MINUTE_MILLIS * 5) return ONE_MINUTE_MILLIS
+        if (maxMilliseconds < ONE_MINUTE_MILLIS * 10) return ONE_MINUTE_MILLIS * 2
+        if (maxMilliseconds < ONE_HOUR_MILLIS / 2) return ONE_MINUTE_MILLIS * 5
+        if (maxMilliseconds < ONE_HOUR_MILLIS) return ONE_MINUTE_MILLIS * 10
+        if (maxMilliseconds < ONE_HOUR_MILLIS * 2) return ONE_MINUTE_MILLIS * 20
+        if (maxMilliseconds < ONE_HOUR_MILLIS * 4) return ONE_MINUTE_MILLIS * 30
+        if (maxMilliseconds < ONE_HOUR_MILLIS * 8) return ONE_HOUR_MILLIS
+        if (maxMilliseconds < ONE_HOUR_MILLIS * 16) return ONE_HOUR_MILLIS * 2
+        if (maxMilliseconds < ONE_DAY_MILLIS) return ONE_HOUR_MILLIS * 4
+        if (maxMilliseconds < ONE_DAY_MILLIS * 2) return ONE_HOUR_MILLIS * 8
+        return ONE_DAY_MILLIS
+
+    })())
     const ticks: number[] = []
-    for (let i = Math.floor(ONE_HOUR_MILLIS/2); i < maxMilliseconds; i+=Math.floor(ONE_HOUR_MILLIS/2)) ticks.push(i)
+    for (let i = valuePerTick; i < maxMilliseconds; i += valuePerTick) ticks.push(i)
     return ticks
 }
 
@@ -146,7 +171,7 @@ export const dayjsAsTrackingDate = (day: Dayjs) => {
 export const trackingDateAsDate = (date: TrackingDate) => {
     return new Date(
         date.year ?? 0,
-        (date.month ?? 1 )- 1,
+        (date.month ?? 1) - 1,
         date.day ?? 1
     )
 }
@@ -160,7 +185,7 @@ export const dateAsTrackingDate = (date: Date) => {
 }
 
 export const weeksInMonth = (year: number, month: number) => {
-    let date = dayjs().year(year).month(month-1).date(1)
+    let date = dayjs().year(year).month(month - 1).date(1)
     let weeks = 1
     while (date.month() === month - 1) {
         date = date.add(1, "week")
@@ -170,11 +195,11 @@ export const weeksInMonth = (year: number, month: number) => {
 }
 
 export const daysInMonth = (year: number, month: number) => {
-    return dayjs().year(year).month(month-1).date(1).daysInMonth()
+    return dayjs().year(year).month(month - 1).date(1).daysInMonth()
 }
 
 export const firstDayOfMonth = (year: number, month: number) => {
-    return dayjs().year(year).month(month-1).date(1).day() + 1;
+    return dayjs().year(year).month(month - 1).date(1).day() + 1;
 }
 
 export const asLocalDateTime = (milliseconds: number) => {

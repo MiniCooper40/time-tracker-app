@@ -1,5 +1,5 @@
 import {useLocalSearchParams} from "expo-router";
-import {Separator, Text, YStack} from "tamagui";
+import {Card, Separator, Text, YStack} from "tamagui";
 import {
     TimeTrackerWeeklyAnalyticsChart
 } from "@/src/features/time-tracker/component/time-tracker-weekly-analytics-chart";
@@ -28,13 +28,17 @@ const Index = () => {
     return (
         <YStack gap="$4">
             <YStack>
-                <Title theme="h1">{getGroupTracker.data.name}</Title>
+                <Title>{getGroupTracker.data.name}</Title>
                 <Text>{getGroupTracker.data.description}</Text>
             </YStack>
             <Separator />
 
-            <TrackerPreviewGrid trackers={getGroupTracker.data.trackers} />
-            <GroupTrackerBarChart groupTracker={getGroupTracker.data} />
+            <Card padding="$3">
+                <TrackerPreviewGrid trackers={getGroupTracker.data.trackers} />
+            </Card>
+            <Card padding="$3">
+                <GroupTrackerBarChart groupTracker={getGroupTracker.data} />
+            </Card>
         </YStack>
     )
 }

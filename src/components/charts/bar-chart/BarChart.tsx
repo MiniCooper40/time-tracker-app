@@ -16,6 +16,11 @@ import {
 } from "react-native-gesture-handler/lib/typescript/handlers/gestures/gestureStateManager";
 import {SkTooltip} from "@/src/components/charts/SkTooltip";
 import {sum} from "@/src/util/math";
+import {
+    useChartLabelFont,
+    useTooltipBodyFont,
+    useTooltipTitleFont
+} from "@/src/components/typography/hooks/use-sk-fonts";
 
 interface BarChartTick {
     value: number;
@@ -60,6 +65,10 @@ const BarChart = ({
                       color
                   }: BarChartProps) => {
 
+    const tooltipTitleFont = useTooltipTitleFont()
+    const labelFont = useChartLabelFont()
+    const tooltipBodyFont = useTooltipBodyFont()
+
     const calculatedData: CalculatedBarChartEntry[] = useMemo(() => initialData.map(data => ({
         ...data,
         totalValue: sum(...data.sections.map(({value}) => value))
@@ -75,10 +84,6 @@ const BarChart = ({
 
     const chartWidth = Math.max(layout.width - tickLabelWidth, 0)
     const chartX = tickLabelWidth
-
-    const tooltipTitleFont = useFont(require("../../../../assets/fonts/Raleway/Raleway-Bold.ttf"), 16)
-    const labelFont = useFont(require("../../../../assets/fonts/SourceSans/SourceSansPro-Semibold.otf"), 12)
-    const tooltipBodyFont = useFont(require("../../../../assets/fonts/SourceSans/SourceSansPro-Light.otf"), 14)
 
     const barWidth = useMemo(() => {
         if (chartWidth === 0) return 0
@@ -163,10 +168,10 @@ const BarChart = ({
                     {layout.width !== 0 && labelFont && tooltipBodyFont && tooltipTitleFont && (
                         <Group>
                             {!loading && barPositions.map((position, barIndex) => (
-                                <BarChartBar  key={`${barIndex}`}
+                                <BarChartBar key={`${barIndex}`}
                                              x={position.x} y={position.y}
                                              width={position.width} height={position.height}
-                                              sections={calculatedData[barIndex].sections}
+                                             sections={calculatedData[barIndex].sections}
                                              opacity={barIndex === pressedBarIndex ? 0.6 : 1}/>
                             ))}
                             {labelFont && calculatedData.map(({label}, i) => {
@@ -186,6 +191,8 @@ const BarChart = ({
                                                           text={ticks[index].label} color="black"/>
                                 }))
                             }
+                            <Path path={xAxisPath} color="grey" style="stroke"/>
+                            <Path path={yAxisPath} color="grey" style="stroke"/>
                             {pressedBarIndex !== undefined && (
                                 <SkTooltip
                                     positionHorizontal={pressedBarIndex > calculatedData.length / 2 ? "left" : "right"}
@@ -199,8 +206,6 @@ const BarChart = ({
                                     entrySpacing={6}
                                 />
                             )}
-                            <Path path={xAxisPath} color="grey" style="stroke"/>
-                            <Path path={yAxisPath} color="grey" style="stroke"/>
                         </Group>
                     )}
                 </Canvas>

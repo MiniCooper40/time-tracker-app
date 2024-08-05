@@ -13,6 +13,11 @@ import {SkTooltip} from "@/src/components/charts/SkTooltip";
 import {rectContainsPoint} from "@/src/util/math";
 import {rgba} from "color2k";
 import {addAlpha} from "@/src/util/color";
+import {
+    useChartLabelFont,
+    useTooltipBodyFont,
+    useTooltipTitleFont
+} from "@/src/components/typography/hooks/use-sk-fonts";
 
 interface CalenderProps<T> {
     year: number;
@@ -51,9 +56,9 @@ const Calender = <T, >({
                            color = "#000000"
                        }: CalenderProps<T>) => {
 
-    const tooltipTitleFont = useFont(require("../../../../assets/fonts/Raleway/Raleway-Bold.ttf"), 16)
-    const labelFont = useFont(require("../../../../assets/fonts/SourceSans/SourceSansPro-Semibold.otf"), 12)
-    const tooltipBodyFont = useFont(require("../../../../assets/fonts/SourceSans/SourceSansPro-Light.otf"), 14)
+    const tooltipTitleFont = useTooltipTitleFont()
+    const labelFont = useChartLabelFont()
+    const tooltipBodyFont = useTooltipBodyFont()
 
     const [layout, setLayout] = useState<{ width: number, height: number }>({width: 0, height: 0})
     const updateCanvasDimensions = (e: LayoutChangeEvent) => {

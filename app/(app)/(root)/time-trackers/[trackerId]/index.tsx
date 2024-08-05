@@ -1,5 +1,5 @@
 import {useLocalSearchParams} from "expo-router";
-import {Separator, Text, YStack} from "tamagui";
+import {Card, Separator, Text, YStack} from "tamagui";
 import {
     TimeTrackerWeeklyAnalyticsChart
 } from "@/src/features/time-tracker/component/time-tracker-weekly-analytics-chart";
@@ -12,6 +12,7 @@ import {Calender} from "@/src/components/charts/calender/Calender";
 import {useTimeTrackerGranularMonthlyAnalytics} from "@/src/features/analytics/api/time-tracker-analytics";
 import {TimeTrackerOverviewDailyAnalytics} from "@/src/features/analytics/types/TimeTrackerAnalytics";
 import {TimeTrackerMonthlyHeatmap} from "@/src/features/time-tracker/component/time-tracker-monthly-heatmap";
+import {TimeTrackerStopwatch} from "@/src/features/time-tracker/component/time-tracker-stopwatch";
 
 const Index = () => {
     const {trackerId} = useLocalSearchParams()
@@ -25,13 +26,18 @@ const Index = () => {
 
     return (
         <YStack gap="$4">
-            <YStack>
-                <Title theme="h1">{getTimeTracker.data.name}</Title>
+            <YStack gap="$2">
+                <Title>{getTimeTracker.data.name}</Title>
+                <TimeTrackerStopwatch fontSize="$7" iconSize={70} trackerId={trackerId} />
                 <Text>{getTimeTracker.data.description}</Text>
             </YStack>
             <Separator />
-            <TimeTrackerWeeklyAnalyticsChart timeTracker={getTimeTracker.data} />
-            <TimeTrackerMonthlyHeatmap timeTracker={getTimeTracker.data} />
+            <Card padding="$3">
+                <TimeTrackerWeeklyAnalyticsChart timeTracker={getTimeTracker.data} />
+            </Card>
+            <Card padding="$3">
+                <TimeTrackerMonthlyHeatmap timeTracker={getTimeTracker.data} />
+            </Card>
         </YStack>
     )
 }

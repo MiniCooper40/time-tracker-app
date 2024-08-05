@@ -1,18 +1,19 @@
 import {useListTimeTrackerGranularWeeklyAnalytics} from "@/src/features/analytics/api/list-time-tracker-analytics";
 import {
     axisTicksForTrackedMillis,
-    currentTrackingDate,
     detailedDayLabelsForWeekStarting,
-    millisecondsToCompressedTimestamp, plusWeeks,
+    millisecondsToCompressedTimestamp,
+    plusWeeks,
     shortDayLabelsForWeekStarting,
-    startOfCurrentTrackingWeek, weekLabel
+    startOfCurrentTrackingWeek,
+    weekLabel
 } from "@/src/util/time";
-import {Text, YStack} from "tamagui";
+import {YStack} from "tamagui";
 import {TrackingDate} from "@/src/features/analytics/types/TrackingDate";
 import {BarChart} from "@/src/components/charts/bar-chart/BarChart";
-import groupTrackers from "@/app/(app)/(root)/group-trackers/(group-trackers)";
 import {useMemo, useState} from "react";
 import {ChartNavigation} from "@/src/components/charts/ChartNavigation";
+import {sum} from "@/src/util/math";
 
 interface GroupTrackerBarChartProps {
     groupTracker: GroupTracker,
@@ -47,13 +48,13 @@ const GroupTrackerBarChart = ({groupTracker, startDate = startOfCurrentTrackingW
             label: dayLabels[dayIndex],
             detailedLabel: detailedDayLabels[dayIndex],
             tooltipEntries: [
-                `Sessions: ${dayIndex}`,
-                `Time tracked: ${dayIndex}`
+                `Sessions: ${sum(...listTrackerAnalytics.map(analytics => analytics.data?.dailyAnalytics[dayIndex].numberOfSessions ?? 0))}`,
+                `Tracked: ${millisecondsToCompressedTimestamp(sum(...listTrackerAnalytics.map(analytics => analytics.data?.dailyAnalytics[dayIndex].totalDuration ?? 0)))}`
             ]
         }))
     }, [isLoading, groupTracker, currentWeek])
 
-    const values = data.map(a => a.sections.map(s => s.value).flat()).flat()
+    const values = data.map(a => sum(...a.sections.map(s => s.value))).flat()
     const ticks = axisTicksForTrackedMillis(Math.max(...values)).map(value => ({
         value,
         label: millisecondsToCompressedTimestamp(value)
@@ -65,7 +66,7 @@ const GroupTrackerBarChart = ({groupTracker, startDate = startOfCurrentTrackingW
     return (
         <YStack>
             <ChartNavigation onIncrement={nextWeek} onDecrement={previousWeek} title={weekLabel(currentWeek)}>
-                <BarChart data={data} ticks={ticks} loading={isLoading}/>
+                <BarChart data={data} ticks={ticks} loading={isLoading} barSpacing={28}/>
             </ChartNavigation>
         </YStack>
     )

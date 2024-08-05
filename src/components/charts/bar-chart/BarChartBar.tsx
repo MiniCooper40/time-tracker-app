@@ -54,7 +54,7 @@ const BarChartBar = ({x, y, width, height, pressed, opacity = 1, sections}: BarC
         <>
             {sectionPositions.map(({x, y, width, height}, index) => (
                 <BarChartBarSection sectionTop={y} sectionHeight={height} color={sections[index].color}
-                                    currentBarHeight={currentHeight} key={index} barRect={barRect}/>
+                                    currentBarHeight={currentHeight} key={index} barRect={barRect} opacity={opacity}/>
             ))}
         </>
     )

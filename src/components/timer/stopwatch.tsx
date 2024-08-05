@@ -6,25 +6,30 @@ import {BLANK_TIMESTAMP, millisecondsToTimestamp} from "@/src/util/time";
 import {Center} from "@/src/components/layouts/Center";
 import {current} from "@react-native-community/cli-tools/build/releaseChecker";
 
-interface StopwatchState {
-    startTime: number;
-    currentTime: number;
-}
 
 export interface StopwatchEvent {
     startTime: number;
     endTime: number;
 }
 
-type StopwatchProps = {
+export type StopwatchProps = {
     startTime: number|undefined;
     loading: boolean;
     onStop: Callback<number>;
     onStart: Callback<number>;
+    iconSize?: number;
+    fontSize?: number | string;
 } & ViewProps
 
-export const Stopwatch = (props: StopwatchProps) => {
-    const {startTime, loading, onStop, onStart} = props
+export const Stopwatch = ({
+    startTime,
+    loading,
+    onStop,
+    onStart,
+    iconSize = 30,
+    fontSize = "$2",
+    ...viewProps
+                          }: StopwatchProps) => {
 
     const [currentTime, setCurrentTime] = useState(Date.now())
 
@@ -41,10 +46,10 @@ export const Stopwatch = (props: StopwatchProps) => {
     }
 
     return (
-        <Center {...props}>
-            <FontAwesome name={startTime ? "pause" : "play"} size={30} color="black" onPress={handleToggle} />
-            {startTime && currentTime && <Text>{millisecondsToTimestamp(Date.now() - startTime)}</Text>}
-            {(!startTime || !currentTime) && <Text>{BLANK_TIMESTAMP}</Text>}
+        <Center {...viewProps}>
+            <FontAwesome name={startTime ? "pause" : "play"} size={iconSize} color="black" onPress={handleToggle} />
+            {startTime && currentTime && <Text fontSize={fontSize}>{millisecondsToTimestamp(Date.now() - startTime)}</Text>}
+            {(!startTime || !currentTime) && <Text fontSize={fontSize}>{BLANK_TIMESTAMP}</Text>}
         </Center>
     )
 }
