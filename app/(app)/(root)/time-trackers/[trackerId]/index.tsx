@@ -1,4 +1,4 @@
-import {useLocalSearchParams} from "expo-router";
+import {router, useLocalSearchParams} from "expo-router";
 import {Card, Separator, Text, YStack} from "tamagui";
 import {
     TimeTrackerWeeklyAnalyticsChart
@@ -13,6 +13,9 @@ import {useTimeTrackerGranularMonthlyAnalytics} from "@/src/features/analytics/a
 import {TimeTrackerOverviewDailyAnalytics} from "@/src/features/analytics/types/TimeTrackerAnalytics";
 import {TimeTrackerMonthlyHeatmap} from "@/src/features/time-tracker/component/time-tracker-monthly-heatmap";
 import {TimeTrackerStopwatch} from "@/src/features/time-tracker/component/time-tracker-stopwatch";
+import {Body} from "@/src/components/typography/Body";
+import {Header} from "@/src/components/header/Header";
+import {ContentCard} from "@/src/components/cards/content-card";
 
 const Index = () => {
     const {trackerId} = useLocalSearchParams()
@@ -26,18 +29,18 @@ const Index = () => {
 
     return (
         <YStack gap="$4">
-            <YStack gap="$2">
-                <Title>{getTimeTracker.data.name}</Title>
-                <TimeTrackerStopwatch fontSize="$7" iconSize={70} trackerId={trackerId} />
-                <Text>{getTimeTracker.data.description}</Text>
+            <YStack gap="$3" justifyContent="center">
+                <Header title={getTimeTracker.data.name} onBack={router.back}
+                        onEdit={() => router.push(`/time-trackers/${trackerId}/edit`)}/>
+                <TimeTrackerStopwatch fontSize="$7" iconSize={54} trackerId={trackerId}/>
+                <Body>{getTimeTracker.data.description}</Body>
             </YStack>
-            <Separator />
-            <Card padding="$3">
-                <TimeTrackerWeeklyAnalyticsChart timeTracker={getTimeTracker.data} />
-            </Card>
-            <Card padding="$3">
-                <TimeTrackerMonthlyHeatmap timeTracker={getTimeTracker.data} />
-            </Card>
+            <ContentCard>
+                <TimeTrackerWeeklyAnalyticsChart timeTracker={getTimeTracker.data}/>
+            </ContentCard>
+            <ContentCard>
+                <TimeTrackerMonthlyHeatmap timeTracker={getTimeTracker.data}/>
+            </ContentCard>
         </YStack>
     )
 }

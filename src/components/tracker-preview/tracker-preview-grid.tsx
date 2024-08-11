@@ -1,18 +1,25 @@
-import {XGroup, XStack} from "tamagui";
+import {Card, XGroup, XStack} from "tamagui";
 import {TrackerPreview} from "@/src/components/tracker-preview/tracker-preview";
+import {Callback} from "@/src/types/Callback";
+import {AntDesign, Entypo} from "@expo/vector-icons";
 
-interface TrackerPreviewGridProps {
-    trackers: Tracker[]
+interface TrackerPreviewGridProps<T extends Tracker> {
+    trackers: T[],
+    isSelected?: Callback<T, boolean>,
+    onSelect?: Callback<T>,
+    selectOnPress?: boolean,
 }
 
-export const TrackerPreviewGrid = ({trackers}: TrackerPreviewGridProps) => {
+export const TrackerPreviewGrid = <T extends Tracker,>({trackers, isSelected, onSelect, selectOnPress}: TrackerPreviewGridProps<T>) => {
     return (
         <XStack
-            gap="$3"
+            rowGap="$1"
+            columnGap="$3"
             flexWrap="wrap"
         >
             {trackers.map(tracker => (
-                <TrackerPreview tracker={tracker} key={tracker.trackerId} />
+                <TrackerPreview selected={isSelected?.(tracker)} onSelected={() => onSelect?.(tracker)}
+                                tracker={tracker} key={tracker.trackerId} selectOnPress={selectOnPress}/>
             ))}
         </XStack>
     )

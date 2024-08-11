@@ -1,1 +1,1 @@
-export type Callback<T> = (value: T) => void
+export type Callback<T, V=void> = (value: T) => V

@@ -14,6 +14,7 @@ import {TimeTrackerOverviewDailyAnalytics} from "@/src/features/analytics/types/
 import {TimeTrackerMonthlyHeatmap} from "@/src/features/time-tracker/component/time-tracker-monthly-heatmap";
 import {useGetGroupTracker} from "@/src/features/group-tracker/api/use-get-group-tracker";
 import {GroupTrackerBarChart} from "@/src/features/group-tracker/components/group-tracker-bar-chart";
+import {ContentCard} from "@/src/components/cards/content-card";
 
 const Index = () => {
     const {trackerId} = useLocalSearchParams()
@@ -27,18 +28,16 @@ const Index = () => {
 
     return (
         <YStack gap="$4">
-            <YStack>
+            <YStack gap="$3">
                 <Title>{getGroupTracker.data.name}</Title>
                 <Text>{getGroupTracker.data.description}</Text>
             </YStack>
-            <Separator />
-
-            <Card padding="$3">
+            <ContentCard>
                 <TrackerPreviewGrid trackers={getGroupTracker.data.trackers} />
-            </Card>
-            <Card padding="$3">
+            </ContentCard>
+            <ContentCard>
                 <GroupTrackerBarChart groupTracker={getGroupTracker.data} />
-            </Card>
+            </ContentCard>
         </YStack>
     )
 }

@@ -7,15 +7,18 @@ import {QueryClientProvider} from "react-query";
 import {queryClient} from "@/src/lib/reactQuery";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import {useEffect} from "react";
+import {StatusBar} from "expo-status-bar";
 
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
 
     const [loaded] = useFonts({
-        Inter: require('@/assets/fonts/Lato/Lato-Regular.ttf'),
-        InterBold: require('@/assets/fonts/Oswald/static/Oswald-Bold.ttf'),
-        InterLight: require('@/assets/fonts/Lato/Lato-Light.ttf')
+        RubikLight: require('@/assets/fonts/Rubik/static/Rubik-Light.ttf'),
+        RubikRegular: require('@/assets/fonts/Rubik/static/Rubik-Regular.ttf'),
+        RubikMedium: require('@/assets/fonts/Rubik/static/Rubik-Medium.ttf'),
+        RubikBold: require('@/assets/fonts/Rubik/static/Rubik-Bold.ttf'),
+        Rubik: require('@/assets/fonts/Rubik/static/Rubik-Regular.ttf')
     })
 
     useEffect(() => {
@@ -27,14 +30,17 @@ export default function RootLayout() {
     }
 
   return (
-    <TamaguiProvider config={config}>
-        <AuthenticationProvider>
-            <QueryClientProvider client={queryClient}>
-                <GestureHandlerRootView>
-                    <Slot />
-                </GestureHandlerRootView>
-            </QueryClientProvider>
-        </AuthenticationProvider>
-    </TamaguiProvider>
+    <>
+        <StatusBar style="dark" />
+        <TamaguiProvider config={config}>
+            <AuthenticationProvider>
+                <QueryClientProvider client={queryClient}>
+                    <GestureHandlerRootView>
+                        <Slot />
+                    </GestureHandlerRootView>
+                </QueryClientProvider>
+            </AuthenticationProvider>
+        </TamaguiProvider>
+    </>
   );
 }

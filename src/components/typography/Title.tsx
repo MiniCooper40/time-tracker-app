@@ -1,7 +1,8 @@
 import {SizableText, styled} from "tamagui";
 
 export const Title = styled(SizableText, {
-    size: "$8",
-    fontWeight: "bold",
-    fontFamily: "InterBold"
+    textAlign: "center",
+    fontFamily: "$heading",
+    fontSize: "$7",
+    fontWeight: 900
 })

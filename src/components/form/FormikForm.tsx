@@ -9,7 +9,7 @@ export interface FormInputProps {
 }
 
 export interface FormProps<T extends AnyObject> {
-    schema: ObjectSchema<Maybe<T>>,
+    schema: ObjectSchema<Maybe<Partial<T>>>,
     initialValues: T,
     onSubmit: (values: T) => void,
     children?: ReactNode,
@@ -19,10 +19,12 @@ export interface FormProps<T extends AnyObject> {
 const Form = ({children}: WithChildren) => {
     const formik = useFormikContext()
     const handleSubmit = () => {
+        console.log("Submitting")
+        console.log(formik.errors)
         formik.handleSubmit()
     }
     return (
-        <TamaguiForm onSubmit={handleSubmit}>
+        <TamaguiForm height="100%" onSubmit={handleSubmit}>
             {children}
         </TamaguiForm>
     )
@@ -30,8 +32,8 @@ const Form = ({children}: WithChildren) => {
 
 export function FormikForm<Schema extends AnyObject> ({schema, initialValues, onSubmit, title, children}: FormProps<Schema>) {
     return (
-        <YStack gap="$2">
-            {title && <Label>{title}</Label>}
+        <YStack gap="$2" height="100%">
+            {title && <Label fontWeight="bold">{title}</Label>}
             <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={schema}>
                 <Form>
                     {children}

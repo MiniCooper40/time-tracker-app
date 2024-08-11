@@ -17,7 +17,7 @@ const ChartNavigation = ({onIncrement, onDecrement, title, children}: ChartNavig
         <YStack gap="$2">
             <XStack style={{justifyContent: "space-between", alignItems: "center"}}>
                 <IconButton icon={<Entypo name="chevron-left" size={20} />} onPress={() => onDecrement()} />
-                <Text>{title}</Text>
+                <Text fontWeight={400}>{title}</Text>
                 <IconButton icon={<Entypo name="chevron-right" size={20} />} onPress={() => onIncrement()} />
             </XStack>
             {children}

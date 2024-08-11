@@ -8,7 +8,7 @@ interface TimeTrackerListProps {
 
 export const TimeTrackerList = ({timeTrackers}: TimeTrackerListProps) => {
     return (
-        <YStack gap="$2">
+        <YStack gap="$4">
             {timeTrackers.map(timeTracker => (
                 <TimeTrackerCard timeTracker={timeTracker} key={timeTracker.trackerId} />
             ))}

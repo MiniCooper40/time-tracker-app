@@ -1,17 +1,22 @@
 import {Card, CardProps, Separator, Text, XStack, YStack} from "tamagui";
 import {TimeTrackerStopwatch} from "@/src/features/time-tracker/component/time-tracker-stopwatch";
-import {TrackerCard} from "@/src/components/cards/tracker-card";
+import {TrackerCardContainer} from "@/src/components/cards/tracker-card-container";
 import {Label} from "@/src/components/typography/Label";
 import {TrackerPreviewGrid} from "@/src/components/tracker-preview/tracker-preview-grid";
 import {useRouter} from "expo-router";
 import timeTrackers from "@/app/(app)/(root)/time-trackers/(time-trackers)";
+import {Body} from "@/src/components/typography/Body";
 
 type TimeTrackerCardProps = {
-    timeTracker: TimeTracker
+    timeTracker: TimeTracker,
+    maxLetters?: number;
 } & CardProps
 
-export const TimeTrackerCard = (props: TimeTrackerCardProps) => {
-    const {timeTracker} = props
+export const TimeTrackerCard = ({
+    timeTracker,
+    maxLetters = 70,
+    ...cardProps
+                                }: TimeTrackerCardProps) => {
     const {name, trackerId, description = "No description", groups} = timeTracker
     const router = useRouter()
 
@@ -20,19 +25,15 @@ export const TimeTrackerCard = (props: TimeTrackerCardProps) => {
     }
 
     return (
-        <TrackerCard {...props} onPress={() => console.log("presed tracker card")}>
-            <Card.Header onPress={routeToTimeTracker}>
-                <Label onPress={routeToTimeTracker}>{name}</Label>
-            </Card.Header>
+        <TrackerCardContainer {...cardProps} onPress={routeToTimeTracker}>
             <XStack width="100%" justifyContent="space-between">
-                <YStack gap="$1" maxWidth="80%">
-                    <Text>{description ?? "No description"}</Text>
-                    <Separator />
-                    <TrackerPreviewGrid trackers={groups} />
-                    {groups.length === 0 && <Text>This tracker is not a part of any groups</Text>}
+                <YStack gap="$2" maxWidth="80%">
+                    <Label>{name}</Label>
+                    <Body>{`${description.substring(0, maxLetters)}${description.length > maxLetters ? "..." : ""}`}</Body>
+                    <TrackerPreviewGrid trackers={groups}/>
                 </YStack>
-                <TimeTrackerStopwatch width="20%" trackerId={trackerId} />
+                <TimeTrackerStopwatch width="20%" trackerId={trackerId}/>
             </XStack>
-        </TrackerCard>
+        </TrackerCardContainer>
     )
 }

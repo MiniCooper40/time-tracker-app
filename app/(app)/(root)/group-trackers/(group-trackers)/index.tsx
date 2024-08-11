@@ -5,6 +5,9 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import {GroupTrackerList} from "@/src/features/group-tracker/components/group-tracker-list";
 import {PageContainer} from "@/src/components/layouts/PageContainer";
 import {TrackerPreviewGrid} from "@/src/components/tracker-preview/tracker-preview-grid";
+import {YStack} from "tamagui";
+import {Title} from "@/src/components/typography/Title";
+import { Header } from "@/src/components/header/Header";
 
 const Page = () => {
     const user = useUser()
@@ -12,9 +15,10 @@ const Page = () => {
 
     const groupTrackers = useGetUsersGroupTrackers(user.data.userId)
     return (
-        <>
+        <YStack gap="$4">
+            <Header title="Group Trackers" onAdd={() => {}} />
             {groupTrackers.data && <GroupTrackerList groupTrackers={groupTrackers.data} />}
-        </>
+        </YStack>
     )
 }
 

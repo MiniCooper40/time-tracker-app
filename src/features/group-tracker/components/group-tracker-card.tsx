@@ -1,14 +1,15 @@
-import {Card, Separator, Spacer, Text, YStack} from "tamagui";
-import {TrackerCard} from "@/src/components/cards/tracker-card";
+import {Card, CardProps, Separator, Spacer, Text, YStack} from "tamagui";
+import {TrackerCardContainer} from "@/src/components/cards/tracker-card-container";
 import {Label} from "@/src/components/typography/Label"
 import {TrackerPreviewGrid} from "@/src/components/tracker-preview/tracker-preview-grid";
 import {router} from "expo-router";
+import {Body} from "@/src/components/typography/Body";
 
-interface GroupTrackerCardProps {
+type GroupTrackerCardProps = {
     groupTracker: GroupTracker
-}
+} & CardProps;
 
-export const GroupTrackerCard = ({groupTracker}: GroupTrackerCardProps) => {
+export const GroupTrackerCard = ({groupTracker, ...cardProps}: GroupTrackerCardProps) => {
 
     const {trackers, name, description} = groupTracker
 
@@ -17,15 +18,12 @@ export const GroupTrackerCard = ({groupTracker}: GroupTrackerCardProps) => {
     }
 
     return (
-        <TrackerCard>
-            <Card.Header onPress={routeToGroupTracker}>
+        <TrackerCardContainer {...cardProps} onPress={routeToGroupTracker}>
+            <YStack gap="$2">
                 <Label>{name}</Label>
-            </Card.Header>
-           <YStack gap="$2">
-               <Text>{description}</Text>
-               <Separator />
-               <TrackerPreviewGrid trackers={trackers} />
-           </YStack>
-        </TrackerCard>
+                <Body>{description}</Body>
+                <TrackerPreviewGrid trackers={trackers}/>
+            </YStack>
+        </TrackerCardContainer>
     )
 }

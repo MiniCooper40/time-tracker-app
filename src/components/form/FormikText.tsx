@@ -1,21 +1,25 @@
 import {FormInputProps} from "@/src/components/form/FormikForm";
 import {Field, useField, useFormikContext} from "formik";
-import {Button, Input} from "tamagui";
+import {Button, Fieldset, Input, Label, YStack} from "tamagui";
 
 type FormTextInputProps = {
-    placeholder?: string
+    label?: string;
+    placeholder?: string;
+    flexDirection?: "row" | "column";
 } & FormInputProps
 
-export const FormikText = ({name, placeholder}: FormTextInputProps) => {
+export const FormikText = ({name, label, placeholder = label, flexDirection="column"}: FormTextInputProps) => {
 
-    const formik = useFormikContext<any>()
+    const [field, meta, helpers] = useField<string>(name)
 
     return (
-        <Input
-            onChange={e => formik.setFieldValue(name, e.nativeEvent.text)}
-            value={formik.values[name]}
-            placeholder={placeholder}
-            id={name}
-        />
+        <Fieldset flexDirection={flexDirection}>
+            {label && <Label>{label}</Label>}
+            <Input
+                onChange={e => helpers.setValue(e.nativeEvent.text)}
+                value={field.value}
+                placeholder={placeholder}
+            />
+        </Fieldset>
     )
 }

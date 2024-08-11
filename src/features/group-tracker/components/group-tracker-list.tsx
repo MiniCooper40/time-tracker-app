@@ -8,7 +8,7 @@ interface GroupTrackerListProps {
 export const GroupTrackerList = ({groupTrackers}: GroupTrackerListProps) => {
 
     return (
-        <YStack gap="$2">
+        <YStack gap="$4">
             {groupTrackers.map(groupTracker => (
                 <GroupTrackerCard groupTracker={groupTracker} key={groupTracker.trackerId} />
             ))}

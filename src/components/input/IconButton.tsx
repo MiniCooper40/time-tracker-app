@@ -6,7 +6,11 @@ type IconButtonProps = {
 } & ButtonProps
 
 const IconButtonBase = styled(Button, {
-    transparent: true
+    transparent: true,
+    minHeight: "$2",
+    paddingVertical: "$2",
+    paddingHorizontal: "$3",
+    borderRadius: 40,
 })
 
 export const IconButton = (props: IconButtonProps) => {

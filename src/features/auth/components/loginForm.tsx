@@ -26,8 +26,8 @@ export const LoginForm = () => {
             initialValues={{email: "rthomlinson03@gmail.com", password: "SpringTest1!"}}
             schema={credentialsInputSchema}>
             <YStack gap="$2">
-                <FormikText name="email" placeholder="Email address"/>
-                <FormikText name="password" placeholder="Password"/>
+                <FormikText name="email" label="Email address"/>
+                <FormikText name="password" label="Password"/>
                 <Form.Trigger asChild>
                     <Button disabled={loading}>
                         Submit

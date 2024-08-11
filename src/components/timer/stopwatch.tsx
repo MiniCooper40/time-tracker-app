@@ -1,10 +1,11 @@
 import {Callback} from "@/src/types/Callback"
-import {Text, ViewProps} from "tamagui";
+import {GetThemeValueForKey, Text, ViewProps} from "tamagui";
 import { FontAwesome } from '@expo/vector-icons';
 import {useEffect, useState} from "react";
 import {BLANK_TIMESTAMP, millisecondsToTimestamp} from "@/src/util/time";
 import {Center} from "@/src/components/layouts/Center";
 import {current} from "@react-native-community/cli-tools/build/releaseChecker";
+import {TextProps} from "react-native";
 
 
 export interface StopwatchEvent {
@@ -18,8 +19,8 @@ export type StopwatchProps = {
     onStop: Callback<number>;
     onStart: Callback<number>;
     iconSize?: number;
-    fontSize?: number | string;
-} & ViewProps
+    fontSize?: "unset" | GetThemeValueForKey<"fontSize"> | undefined;
+} & ViewProps & TextProps
 
 export const Stopwatch = ({
     startTime,
@@ -27,7 +28,7 @@ export const Stopwatch = ({
     onStop,
     onStart,
     iconSize = 30,
-    fontSize = "$2",
+    fontSize = "$6",
     ...viewProps
                           }: StopwatchProps) => {
 
