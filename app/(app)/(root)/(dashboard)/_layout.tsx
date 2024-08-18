@@ -1,10 +1,11 @@
-import {PageContainer} from "@/src/components/layouts/PageContainer";
-import {Slot} from "expo-router";
+import { Stack } from "expo-router";
 
 const Layout = () => {
-    return <PageContainer>
-        <Slot />
-    </PageContainer>
-}
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(home)" />
+    </Stack>
+  );
+};
 
-export default Layout
+export default Layout;

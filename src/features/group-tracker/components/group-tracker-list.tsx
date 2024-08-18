@@ -1,17 +1,19 @@
-import {YStack} from "tamagui";
-import {GroupTrackerCard} from "@/src/features/group-tracker/components/group-tracker-card";
+import { YStack } from "tamagui";
+import { GroupTrackerCard } from "@/src/features/group-tracker/components/group-tracker-card";
 
 interface GroupTrackerListProps {
-    groupTrackers: GroupTracker[]
+  groupTrackers: GroupTracker[];
 }
 
-export const GroupTrackerList = ({groupTrackers}: GroupTrackerListProps) => {
-
-    return (
-        <YStack gap="$4">
-            {groupTrackers.map(groupTracker => (
-                <GroupTrackerCard groupTracker={groupTracker} key={groupTracker.trackerId} />
-            ))}
-        </YStack>
-    )
-}
+export const GroupTrackerList = ({ groupTrackers }: GroupTrackerListProps) => {
+  return (
+    <YStack gap="$4">
+      {groupTrackers.map((groupTracker) => (
+        <GroupTrackerCard
+          groupTracker={groupTracker}
+          key={groupTracker.trackerId}
+        />
+      ))}
+    </YStack>
+  );
+};
