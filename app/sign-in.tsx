@@ -1,13 +1,12 @@
-import {LoginForm} from "@/src/features/auth/components/loginForm";
-import {View} from "tamagui";
-import {FormPageLayout} from "@/src/components/layouts/FormPageLayout";
+import { LoginForm } from "@/src/features/auth/components/login-form";
+import { FormPageLayout } from "@/src/components/layouts/form-page-layout";
 
 const SignIn = () => {
-    return (
-        <FormPageLayout>
-            <LoginForm />
-        </FormPageLayout>
-    )
-}
+  return (
+    <FormPageLayout>
+      <LoginForm />
+    </FormPageLayout>
+  );
+};
 
-export default SignIn
+export default SignIn;

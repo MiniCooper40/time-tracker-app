@@ -1,32 +1,45 @@
-import {Slot} from "expo-router";
-import {AuthenticationProvider} from "@/src/components/providers/AuthenticationProvider";
-import {TamaguiProvider} from "tamagui";
-import config from "../tamagui.config"
-import {useFonts} from "expo-font";
-import {QueryClientProvider} from "react-query";
-import {queryClient} from "@/src/lib/reactQuery";
-import {GestureHandlerRootView} from "react-native-gesture-handler";
+import { Slot, SplashScreen } from "expo-router";
+import { AuthenticationProvider } from "@/src/components/providers/authentication-provider";
+import { TamaguiProvider } from "tamagui";
+import config from "../tamagui.config";
+import { useFonts } from "expo-font";
+import { QueryClientProvider } from "react-query";
+import { queryClient } from "@/src/lib/react-query";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [loaded] = useFonts({
+    RubikLight: require("@/assets/fonts/Rubik/static/Rubik-Light.ttf"),
+    RubikRegular: require("@/assets/fonts/Rubik/static/Rubik-Regular.ttf"),
+    RubikMedium: require("@/assets/fonts/Rubik/static/Rubik-Medium.ttf"),
+    RubikBold: require("@/assets/fonts/Rubik/static/Rubik-Bold.ttf"),
+    Rubik: require("@/assets/fonts/Rubik/static/Rubik-Regular.ttf"),
+  });
 
-    const [loaded] = useFonts({
-        Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
-        InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
-    })
+  useEffect(() => {
+    if (loaded) SplashScreen.hideAsync();
+  }, [loaded]);
 
-    if (!loaded) {
-        return null
-    }
+  if (!loaded) {
+    return null;
+  }
 
   return (
-    <TamaguiProvider config={config}>
+    <>
+      <StatusBar style="dark" />
+      <TamaguiProvider config={config}>
         <AuthenticationProvider>
-            <QueryClientProvider client={queryClient}>
-                <GestureHandlerRootView>
-                    <Slot />
-                </GestureHandlerRootView>
-            </QueryClientProvider>
+          <QueryClientProvider client={queryClient}>
+            <GestureHandlerRootView>
+              <Slot />
+            </GestureHandlerRootView>
+          </QueryClientProvider>
         </AuthenticationProvider>
-    </TamaguiProvider>
+      </TamaguiProvider>
+    </>
   );
 }

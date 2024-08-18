@@ -1,9 +1,9 @@
-import {createTamagui} from "tamagui";
+import { createTamagui } from "tamagui";
 
-export const config = createTamagui({})
+export const config = createTamagui({});
 
-export type Conf = typeof config
+export type Conf = typeof config;
 
-declare module 'tamagui' {
-    interface Conf {}
+declare module "tamagui" {
+  interface Conf {}
 }
