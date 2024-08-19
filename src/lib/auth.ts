@@ -1,5 +1,6 @@
 import { supabase } from "@/src/lib/supabase";
 import * as yup from "yup";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export interface CredentialsInput {
   email: string;
@@ -20,6 +21,7 @@ const signUp = (credentials: CredentialsInput) => {
 };
 
 const signOut = () => {
+  AsyncStorage.clear();
   return supabase.auth.signOut();
 };
 

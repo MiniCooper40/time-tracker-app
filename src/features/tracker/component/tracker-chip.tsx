@@ -9,7 +9,7 @@ interface TrackerPreviewProps<T extends Tracker> {
   selectOnPress?: boolean;
 }
 
-export const TrackerPreview = <T extends Tracker>({
+export const TrackerChip = <T extends Tracker>({
   tracker,
   selected,
   onSelected,
@@ -32,7 +32,7 @@ export const TrackerPreview = <T extends Tracker>({
       onLongPress={select}
       borderRadius={70}
       onPress={unselect}
-      style={{ ...border, boxSizing: "border-box" }}
+      style={{ ...border, boxSizing: "border-box", backgroundColor: "transparent" }}
     >
       <XStack
         justifyContent="center"

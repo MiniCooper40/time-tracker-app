@@ -11,17 +11,22 @@ import { FormikParagraph } from "@/src/components/form/formik-paragraph";
 import { FormikGroupTrackerSelect } from "@/src/components/form/formik-group-tracker-select";
 import { FormikActions } from "@/src/components/form/formik-actions";
 import { router } from "expo-router";
+import { CurrentToast } from "@/src/components/toasts/Toast";
+import { useToastController } from "@tamagui/toast";
 
 export const CreateTimeTrackerForm = ({ userId }: { userId: string }) => {
+  const toast = useToastController();
+
   const createTimeTracker = useCreateTimeTracker(userId);
 
   const handleCreateTimeTracker = (
     timeTrackerInput: TimeTrackerCreationInput,
   ) => {
     createTimeTracker.mutate(timeTrackerInput, {
-      onSuccess: ({ trackerId }) => {
+      onSuccess: (tracker) => {
         router.back();
-        router.push(`/time-trackers/${trackerId}`);
+        router.push(`/time-trackers/${tracker.trackerId}`);
+        toast.show(`Created tracker "${tracker.name}"`, { native: "mobile" });
       },
     });
   };
@@ -35,18 +40,19 @@ export const CreateTimeTrackerForm = ({ userId }: { userId: string }) => {
 
   return (
     <FormikForm
-      title="Create time tracker"
+      title="Time Tracker"
       schema={timeTrackerCreationInputValidationSchema}
       initialValues={initialValues}
       onSubmit={handleCreateTimeTracker}
     >
+      <CurrentToast />
       <YStack gap="$2" style={{ justifyContent: "flex-start" }}>
         <FormikText name="name" label="Name" />
         <FormikParagraph name="description" label="Description" />
         <FormikColorPicker name="color" />
         <FormikGroupTrackerSelect name="groupIds" userId={userId} />
         <FormikActions
-          onCancel={() => router.replace("/time-trackers")}
+          onCancel={router.back}
           loading={createTimeTracker.isLoading}
         />
       </YStack>

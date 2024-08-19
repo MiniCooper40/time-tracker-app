@@ -13,6 +13,8 @@ import {
   useEditGroupTracker,
 } from "@/src/features/group-tracker/api/use-edit-group-tracker";
 import { FormikTimeTrackerSelect } from "@/src/components/form/formik-time-tracker-select";
+import { CurrentToast } from "@/src/components/toasts/Toast";
+import { useToastController } from "@tamagui/toast";
 
 export const EditGroupTrackerForm = ({
   trackerId,
@@ -21,12 +23,17 @@ export const EditGroupTrackerForm = ({
   trackerId: string;
   userId: string;
 }) => {
+  const toast = useToastController();
+
   const editGroupTracker = useEditGroupTracker(trackerId, userId);
   const groupTracker = useGetGroupTracker(trackerId);
 
   const handleEdit = (values: GroupTrackerEditInput) => {
     editGroupTracker.mutate(values, {
-      onSuccess: () => router.replace(`/group-trackers/${trackerId}`),
+      onSuccess: (group) => {
+        router.back();
+        toast.show(`Edited group "${group.name}"`, { native: "mobile" });
+      },
     });
   };
   const initialGroupTrackerInput = useMemo(() => {
@@ -47,8 +54,9 @@ export const EditGroupTrackerForm = ({
           initialValues={initialGroupTrackerInput}
           schema={groupTrackerEditInputValidation}
           onSubmit={handleEdit}
-          title="Edit time tracker"
+          title={groupTracker.data.name}
         >
+          <CurrentToast />
           <YStack gap="$2">
             <FormikText name="name" label="Name" />
             <FormikParagraph name="description" label="Description" />
@@ -59,7 +67,7 @@ export const EditGroupTrackerForm = ({
               initialTimeTrackers={groupTracker.data.trackers}
             />
             <FormikActions
-              onCancel={() => router.replace("/time-trackers")}
+              onCancel={router.back}
               createLabel="Submit"
               loading={editGroupTracker.isLoading}
             />

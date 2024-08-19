@@ -1,12 +1,12 @@
-import { LoginForm } from "@/src/features/auth/components/login-form";
 import { FormPageLayout } from "@/src/components/layouts/form-page-layout";
+import { Slot } from "expo-router";
 
-const SignIn = () => {
+const Layout = () => {
   return (
     <FormPageLayout>
-      <LoginForm />
+      <Slot />
     </FormPageLayout>
   );
 };
 
-export default SignIn;
+export default Layout

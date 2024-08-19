@@ -13,6 +13,8 @@ import {
   useEditTimeTracker,
 } from "@/src/features/time-tracker/api/use-edit-time-tracker";
 import { YStack } from "tamagui";
+import { useToastController } from "@tamagui/toast";
+import { CurrentToast } from "@/src/components/toasts/Toast";
 
 export const EditTimeTrackerForm = ({
   trackerId,
@@ -21,12 +23,17 @@ export const EditTimeTrackerForm = ({
   trackerId: string;
   userId: string;
 }) => {
+  const toast = useToastController();
+
   const editTimeTracker = useEditTimeTracker(trackerId, userId);
   const timeTracker = useGetTimeTracker(trackerId);
 
   const handleEdit = (values: TimeTrackerEditInput) => {
     editTimeTracker.mutate(values, {
-      onSuccess: () => router.replace(`/time-trackers/${trackerId}`),
+      onSuccess: (tracker) => {
+        router.back();
+        toast.show(`Edited tracker "${tracker.name}"`, { native: "mobile" });
+      },
     });
   };
   const initialTimeTrackerInput = useMemo(() => {
@@ -47,8 +54,9 @@ export const EditTimeTrackerForm = ({
           initialValues={initialTimeTrackerInput}
           schema={timeTrackerEditInputValidation}
           onSubmit={handleEdit}
-          title="Edit time tracker"
+          title={timeTracker.data.name}
         >
+          <CurrentToast />
           <YStack gap="$2">
             <FormikText name="name" label="Name" />
             <FormikParagraph name="description" label="Description" />
@@ -59,7 +67,7 @@ export const EditTimeTrackerForm = ({
               initialGroupTrackers={timeTracker.data.groups}
             />
             <FormikActions
-              onCancel={() => router.replace("/time-trackers")}
+              onCancel={router.back}
               createLabel="Submit"
               loading={editTimeTracker.isLoading}
             />

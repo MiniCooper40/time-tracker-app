@@ -1,5 +1,5 @@
 import { XStack } from "tamagui";
-import { TrackerPreview } from "@/src/components/tracker-preview/tracker-preview";
+import { TrackerChip } from "@/src/features/tracker/component/tracker-chip";
 import { Callback } from "@/src/types/callback";
 
 interface TrackerPreviewGridProps<T extends Tracker> {
@@ -9,7 +9,7 @@ interface TrackerPreviewGridProps<T extends Tracker> {
   selectOnPress?: boolean;
 }
 
-export const TrackerPreviewGrid = <T extends Tracker>({
+export const TrackerChipGrid = <T extends Tracker>({
   trackers,
   isSelected,
   onSelect,
@@ -18,7 +18,7 @@ export const TrackerPreviewGrid = <T extends Tracker>({
   return (
     <XStack rowGap="$1" columnGap="$3" flexWrap="wrap">
       {trackers.map((tracker) => (
-        <TrackerPreview
+        <TrackerChip
           selected={isSelected?.(tracker)}
           onSelected={() => onSelect?.(tracker)}
           tracker={tracker}

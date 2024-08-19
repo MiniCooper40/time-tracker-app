@@ -4,6 +4,8 @@ import { GroupTrackerList } from "@/src/features/group-tracker/components/group-
 import { YStack } from "tamagui";
 import { Header } from "@/src/components/header/header";
 import { router } from "expo-router";
+import { IconButton } from "@/src/components/input/icon-button";
+import { AddIcon } from "@/src/components/icons/icons";
 
 const Page = () => {
   const user = useUser();
@@ -12,10 +14,14 @@ const Page = () => {
   const groupTrackers = useGetUsersGroupTrackers(user.data.userId);
   return (
     <YStack gap="$4">
-      <Header
-        title="Group Trackers"
-        onAdd={() => router.push("/group-trackers/create")}
-      />
+      <Header title="Group Trackers">
+        <Header.Right>
+          <IconButton
+            icon={AddIcon}
+            onPress={() => router.push("/group-trackers/create")}
+          />
+        </Header.Right>
+      </Header>
       {groupTrackers.data && (
         <GroupTrackerList groupTrackers={groupTrackers.data} />
       )}

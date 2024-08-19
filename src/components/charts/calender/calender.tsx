@@ -173,7 +173,7 @@ const Calender = <T,>({
 
   const colorForDay = (day: CalenderDay) => {
     if (!day.weight || day.weight === 0) return "lightgrey";
-    return addAlpha(color, day.weight / Math.max(...dayWeights));
+    return addAlpha(color, Math.max(0.1, day.weight / Math.max(...dayWeights)));
   };
 
   return (

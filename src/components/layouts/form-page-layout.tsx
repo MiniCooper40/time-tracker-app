@@ -1,7 +1,7 @@
-import { WithChildren } from "@/src/types/with-children";
 import { View } from "tamagui";
+import {ReactNode} from "react";
 
-export const FormPageLayout = ({ children }: WithChildren) => {
+export const FormPageLayout = ({ children }: {children: ReactNode}) => {
   return (
     <View
       padding="$4"

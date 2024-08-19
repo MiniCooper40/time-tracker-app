@@ -8,6 +8,8 @@ import { queryClient } from "@/src/lib/react-query";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
+import { ToastProvider } from "@tamagui/toast";
+import {TimeTrackingProvider} from "@/src/components/providers/time-tracking-provider";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -32,13 +34,17 @@ export default function RootLayout() {
     <>
       <StatusBar style="dark" />
       <TamaguiProvider config={config}>
-        <AuthenticationProvider>
-          <QueryClientProvider client={queryClient}>
-            <GestureHandlerRootView>
-              <Slot />
-            </GestureHandlerRootView>
-          </QueryClientProvider>
-        </AuthenticationProvider>
+        <ToastProvider>
+          <AuthenticationProvider>
+            <QueryClientProvider client={queryClient}>
+              <TimeTrackingProvider>
+                <GestureHandlerRootView>
+                  <Slot />
+                </GestureHandlerRootView>
+              </TimeTrackingProvider>
+            </QueryClientProvider>
+          </AuthenticationProvider>
+        </ToastProvider>
       </TamaguiProvider>
     </>
   );

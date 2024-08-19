@@ -8,8 +8,9 @@ import { FormikText } from "@/src/components/form/formik-text";
 import { Button, Form, Spinner, Text, YStack } from "tamagui";
 import { router } from "expo-router";
 import { useState } from "react";
+import { Subtitle } from "@/src/components/typography/subtitle";
 
-export const LoginForm = () => {
+export const SignInForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleLogin = async (credentials: CredentialsInput) => {
@@ -24,7 +25,6 @@ export const LoginForm = () => {
 
   return (
     <FormikForm
-      title="Sign in"
       onSubmit={handleLogin}
       initialValues={{
         email: "rthomlinson03@gmail.com",
@@ -33,6 +33,7 @@ export const LoginForm = () => {
       schema={credentialsInputSchema}
     >
       <YStack gap="$4">
+        <Subtitle>Sign in</Subtitle>
         <YStack gap="$2">
           <FormikText name="email" label="Email address" />
           <FormikText name="password" label="Password" />

@@ -10,9 +10,13 @@ import { FormikColorPicker } from "@/src/components/form/formik-color-picker";
 import { FormikTimeTrackerSelect } from "@/src/components/form/formik-time-tracker-select";
 import { FormikActions } from "@/src/components/form/formik-actions";
 import { router } from "expo-router";
-import {YStack} from "tamagui";
+import { YStack } from "tamagui";
+import { CurrentToast } from "@/src/components/toasts/Toast";
+import { useToastController } from "@tamagui/toast";
 
 export const CreateGroupTrackerForm = ({ userId }: { userId: string }) => {
+  const toast = useToastController();
+
   const createGroupTracker = useCreateGroupTracker(userId);
   const initialGroupTrackerInput = {
     name: "",
@@ -25,9 +29,10 @@ export const CreateGroupTrackerForm = ({ userId }: { userId: string }) => {
     groupTrackerInput: GroupTrackerCreationInput,
   ) => {
     createGroupTracker.mutate(groupTrackerInput, {
-      onSuccess: ({ trackerId }) => {
+      onSuccess: (tracker) => {
         router.back();
-        router.push(`/group-trackers/${trackerId}`);
+        router.push(`/group-trackers/${tracker.trackerId}`);
+        toast.show(`Created group "${tracker.name}"`, { native: "mobile" });
       },
     });
   };
@@ -37,13 +42,18 @@ export const CreateGroupTrackerForm = ({ userId }: { userId: string }) => {
       schema={groupTrackerCreationInputValidationSchema}
       initialValues={initialGroupTrackerInput}
       onSubmit={handleCreateGroupTracker}
+      title="Group Tracker"
     >
+      <CurrentToast />
       <YStack gap="$2">
         <FormikText name="name" label="Name" />
         <FormikParagraph name="description" label="Description" />
         <FormikColorPicker name="color" />
         <FormikTimeTrackerSelect name="trackerIds" userId={userId} />
-        <FormikActions loading={createGroupTracker.isLoading} />
+        <FormikActions
+          loading={createGroupTracker.isLoading}
+          onCancel={router.back}
+        />
       </YStack>
     </FormikForm>
   );
