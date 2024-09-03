@@ -12,7 +12,7 @@ import {
   XStack,
   YStack,
 } from "tamagui";
-import { TrackerPreviewGrid } from "@/src/components/tracker-preview/tracker-preview-grid";
+import { TrackerChipGrid } from "@/src/features/tracker/component/tracker-chip-grid";
 import { IconButton } from "@/src/components/input/icon-button";
 import { AntDesign } from "@expo/vector-icons";
 import { Search } from "@/src/components/input/search";
@@ -113,7 +113,7 @@ export const FormikGroupTrackerSelect = ({
           </XStack>
         )}
       </XStack>
-      <TrackerPreviewGrid
+      <TrackerChipGrid
         trackers={selectedTrackers}
         onSelect={toggleSelectedForDeletion}
         isSelected={isGroupSelectedForDeletion}

@@ -1,11 +1,10 @@
 import { Session } from "@supabase/auth-js";
-import { useEffect, useState } from "react";
+import {ReactNode, useEffect, useState} from "react";
 import { AuthenticationContext } from "@/src/contexts/authentication-context";
 import { supabase } from "@/src/lib/supabase";
-import { WithChildren } from "@/src/types/with-children";
 import { router } from "expo-router";
 
-export const AuthenticationProvider = ({ children }: WithChildren) => {
+export const AuthenticationProvider = ({ children }: {children: ReactNode}) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 

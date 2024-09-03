@@ -3,6 +3,7 @@ import {
   TrackingMonth,
 } from "@/src/features/analytics/types/tracking-date";
 import dayjs, { Dayjs } from "dayjs";
+import { TrackedTime } from "@/src/types/time";
 
 const startPaddedWithZero = (value: number): string => {
   if (value < 10) return `0${value}`;
@@ -240,6 +241,14 @@ export const firstDayOfMonth = (year: number, month: number) => {
       .month(month - 1)
       .date(1)
       .day() + 1
+  );
+};
+
+export const timestampForTrackedTime = (trackedTime: TrackedTime) => {
+  const startTime = new Date(trackedTime.startTime);
+  const endTime = new Date(trackedTime.endTime);
+  return millisecondsToCompressedTimestamp(
+    endTime.getTime() - startTime.getTime(),
   );
 };
 

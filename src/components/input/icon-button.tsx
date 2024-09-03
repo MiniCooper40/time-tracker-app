@@ -8,9 +8,8 @@ type IconButtonProps = {
 const IconButtonBase = styled(Button, {
   transparent: true,
   minHeight: "$2",
-  paddingVertical: "$2",
-  paddingHorizontal: "$3",
   borderRadius: 40,
+  circular: true
 });
 
 export const IconButton = (props: IconButtonProps) => {

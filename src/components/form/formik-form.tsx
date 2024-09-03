@@ -1,8 +1,11 @@
 import { Formik, useFormikContext } from "formik";
 import { AnyObject, Maybe, ObjectSchema } from "yup";
 import { ReactNode } from "react";
-import { WithChildren } from "@/src/types/with-children";
-import { Form as TamaguiForm, Label, YStack } from "tamagui";
+import { Form as TamaguiForm, YStack } from "tamagui";
+import { Header } from "../header/header";
+import { IconButton } from "@/src/components/input/icon-button";
+import { XIcon } from "@/src/components/icons/icons";
+import { useRouter } from "expo-router";
 
 export interface FormInputProps {
   name: string;
@@ -14,9 +17,10 @@ export interface FormProps<T extends AnyObject> {
   onSubmit: (values: T) => void;
   children?: ReactNode;
   title?: string;
+  exitable?: boolean;
 }
 
-const Form = ({ children }: WithChildren) => {
+const Form = ({ children }: {children: ReactNode}) => {
   const formik = useFormikContext();
   const handleSubmit = () => {
     console.log("Submitting");
@@ -30,12 +34,20 @@ export function FormikForm<Schema extends AnyObject>({
   schema,
   initialValues,
   onSubmit,
-  title,
+  title = "",
   children,
+  exitable = false,
 }: FormProps<Schema>) {
+  const router = useRouter();
   return (
     <YStack gap="$2">
-      {title && <Label fontWeight="bold">{title}</Label>}
+      <Header title={title}>
+        {exitable && (
+          <Header.Right>
+            <IconButton icon={XIcon} onPress={router.back} />
+          </Header.Right>
+        )}
+      </Header>
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
