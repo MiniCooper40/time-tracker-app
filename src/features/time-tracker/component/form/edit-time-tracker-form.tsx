@@ -15,6 +15,7 @@ import {
 import { YStack } from "tamagui";
 import { useToastController } from "@tamagui/toast";
 import { CurrentToast } from "@/src/components/toasts/Toast";
+import { LoadingPage } from "@/src/components/loading/LoadingPage";
 
 export const EditTimeTrackerForm = ({
   trackerId,
@@ -47,33 +48,30 @@ export const EditTimeTrackerForm = ({
     };
   }, [timeTracker.isFetching, timeTracker.data]);
 
+  if (!initialTimeTrackerInput || !timeTracker.data) return <LoadingPage />;
+
   return (
-    <>
-      {initialTimeTrackerInput && timeTracker.data && (
-        <FormikForm
-          initialValues={initialTimeTrackerInput}
-          schema={timeTrackerEditInputValidation}
-          onSubmit={handleEdit}
-          title={timeTracker.data.name}
-        >
-          <CurrentToast />
-          <YStack gap="$2">
-            <FormikText name="name" label="Name" />
-            <FormikParagraph name="description" label="Description" />
-            <FormikColorPicker name="color" />
-            <FormikGroupTrackerSelect
-              name="groupIds"
-              userId={userId}
-              initialGroupTrackers={timeTracker.data.groups}
-            />
-            <FormikActions
-              onCancel={router.back}
-              createLabel="Submit"
-              loading={editTimeTracker.isLoading}
-            />
-          </YStack>
-        </FormikForm>
-      )}
-    </>
+    <FormikForm
+      initialValues={initialTimeTrackerInput}
+      schema={timeTrackerEditInputValidation}
+      onSubmit={handleEdit}
+    >
+      <CurrentToast />
+      <YStack gap="$2">
+        <FormikText name="name" label="Name" />
+        <FormikParagraph name="description" label="Description" />
+        <FormikColorPicker name="color" />
+        <FormikGroupTrackerSelect
+          name="groupIds"
+          userId={userId}
+          initialGroupTrackers={timeTracker.data.groups}
+        />
+        <FormikActions
+          onCancel={router.back}
+          createLabel="Submit"
+          loading={editTimeTracker.isLoading}
+        />
+      </YStack>
+    </FormikForm>
   );
 };

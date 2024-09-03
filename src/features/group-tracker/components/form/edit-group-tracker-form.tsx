@@ -15,6 +15,7 @@ import {
 import { FormikTimeTrackerSelect } from "@/src/components/form/formik-time-tracker-select";
 import { CurrentToast } from "@/src/components/toasts/Toast";
 import { useToastController } from "@tamagui/toast";
+import { LoadingPage } from "@/src/components/loading/LoadingPage";
 
 export const EditGroupTrackerForm = ({
   trackerId,
@@ -47,33 +48,30 @@ export const EditGroupTrackerForm = ({
     };
   }, [groupTracker.isFetching, groupTracker.data]);
 
+  if (!initialGroupTrackerInput || !groupTracker.data) return <LoadingPage />;
+
   return (
-    <>
-      {initialGroupTrackerInput && groupTracker.data && (
-        <FormikForm
-          initialValues={initialGroupTrackerInput}
-          schema={groupTrackerEditInputValidation}
-          onSubmit={handleEdit}
-          title={groupTracker.data.name}
-        >
-          <CurrentToast />
-          <YStack gap="$2">
-            <FormikText name="name" label="Name" />
-            <FormikParagraph name="description" label="Description" />
-            <FormikColorPicker name="color" />
-            <FormikTimeTrackerSelect
-              name="trackerIds"
-              userId={userId}
-              initialTimeTrackers={groupTracker.data.trackers}
-            />
-            <FormikActions
-              onCancel={router.back}
-              createLabel="Submit"
-              loading={editGroupTracker.isLoading}
-            />
-          </YStack>
-        </FormikForm>
-      )}
-    </>
+    <FormikForm
+      initialValues={initialGroupTrackerInput}
+      schema={groupTrackerEditInputValidation}
+      onSubmit={handleEdit}
+    >
+      <CurrentToast />
+      <YStack gap="$2">
+        <FormikText name="name" label="Name" />
+        <FormikParagraph name="description" label="Description" />
+        <FormikColorPicker name="color" />
+        <FormikTimeTrackerSelect
+          name="trackerIds"
+          userId={userId}
+          initialTimeTrackers={groupTracker.data.trackers}
+        />
+        <FormikActions
+          onCancel={router.back}
+          createLabel="Submit"
+          loading={editGroupTracker.isLoading}
+        />
+      </YStack>
+    </FormikForm>
   );
 };

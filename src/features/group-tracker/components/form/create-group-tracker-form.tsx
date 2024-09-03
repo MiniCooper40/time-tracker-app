@@ -42,7 +42,6 @@ export const CreateGroupTrackerForm = ({ userId }: { userId: string }) => {
       schema={groupTrackerCreationInputValidationSchema}
       initialValues={initialGroupTrackerInput}
       onSubmit={handleCreateGroupTracker}
-      title="Group Tracker"
     >
       <CurrentToast />
       <YStack gap="$2">

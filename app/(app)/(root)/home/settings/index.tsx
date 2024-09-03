@@ -5,6 +5,7 @@ import { BackArrowIcon } from "@/src/components/icons/icons";
 import { useRouter } from "expo-router";
 import { signOut } from "@/src/lib/auth";
 import { useUser } from "@/src/hooks/use-user";
+import {TextButton} from "@/src/components/input/text-button";
 
 const Page = () => {
   const router = useRouter();
@@ -18,9 +19,9 @@ const Page = () => {
           <IconButton icon={BackArrowIcon} onPress={router.back} />
         </Header.Left>
       </Header>
-      <YStack gap="$2">
+      <YStack gap="$3">
         <Text>{`Account: ${user ? user.email : "error"}`}</Text>
-        <Button onPress={signOut}>Sign out</Button>
+        <TextButton onPress={signOut}>Sign out</TextButton>
       </YStack>
     </YStack>
   );

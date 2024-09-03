@@ -40,7 +40,6 @@ export const CreateTimeTrackerForm = ({ userId }: { userId: string }) => {
 
   return (
     <FormikForm
-      title="Time Tracker"
       schema={timeTrackerCreationInputValidationSchema}
       initialValues={initialValues}
       onSubmit={handleCreateTimeTracker}

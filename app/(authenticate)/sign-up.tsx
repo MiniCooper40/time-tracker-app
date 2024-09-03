@@ -5,7 +5,7 @@ import { SignUpForm } from "@/src/features/auth/components/sign-up-form";
 const SignUp = () => {
   const router = useRouter();
   return (
-    <YStack gap="$2">
+    <YStack gap="$3">
       <SignUpForm />
       <XStack gap="$2">
         <Text>Already have an account?</Text>
