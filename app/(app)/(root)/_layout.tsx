@@ -5,11 +5,11 @@ import { Tabs } from "expo-router";
 import { useTheme } from "tamagui";
 
 const Layout = () => {
-  const useUserQuery = useUser();
+  const user = useUser();
 
   const theme = useTheme();
 
-  if (useUserQuery.isFetching) return <Text>Loading...</Text>;
+  if (user.isFetching) return <Text>Loading...</Text>;
   else
     return (
       <Tabs

@@ -12,12 +12,10 @@ export const AuthenticationProvider = ({ children }: {children: ReactNode}) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
-      router.replace("/");
     });
 
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      router.replace("/");
     });
   }, []);
 
