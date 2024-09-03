@@ -5,7 +5,7 @@ import {useRouter} from "expo-router";
 const SignIn = () => {
   const router = useRouter()
   return (
-    <YStack gap="$2">
+    <YStack gap="$3">
       <SignInForm />
       <XStack gap="$2">
         <Text>Don't have an account?</Text>

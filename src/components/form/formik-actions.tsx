@@ -1,6 +1,6 @@
 import { Callback } from "@/src/types/callback";
-import { Button, Form, Spinner, Text, XStack } from "tamagui";
-import { Center } from "@/src/components/layouts/center";
+import { Form, Spinner, XStack } from "tamagui";
+import { TextButton } from "@/src/components/input/text-button";
 
 interface FormikActionsProps {
   createLabel?: string;
@@ -16,15 +16,16 @@ export const FormikActions = ({
   loading = false,
 }: FormikActionsProps) => {
   return (
-    <XStack gap="$4" paddingTop="$4" justifyContent="flex-end">
-      <Button onPress={() => onCancel?.()}>{cancelLabel}</Button>
+    <XStack
+      gap="$4"
+      paddingTop="$4"
+      justifyContent="flex-end"
+      alignItems="center"
+    >
+      {loading && <Spinner size="small" />}
+      <TextButton onPress={() => onCancel?.()}>{cancelLabel}</TextButton>
       <Form.Trigger asChild>
-        <Button position="relative">
-          <Text opacity={loading ? 0 : 1}>{createLabel}</Text>
-          <Center style={{inset: 0, position: "absolute"}}>
-            {loading && <Spinner color="darkgrey" size="small" />}
-          </Center>
-        </Button>
+        <TextButton>{createLabel}</TextButton>
       </Form.Trigger>
     </XStack>
   );

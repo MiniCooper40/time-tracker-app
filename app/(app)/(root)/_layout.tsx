@@ -27,7 +27,7 @@ const Layout = () => {
           headerShown: false,
         }}
         sceneContainerStyle={{
-          backgroundColor: theme.background?.get(),
+          backgroundColor: theme.background.get(),
         }}
       >
         <Tabs.Screen

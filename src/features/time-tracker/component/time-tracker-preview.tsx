@@ -20,7 +20,7 @@ export const TimeTrackerPreview = ({
   const router = useRouter();
 
   const routeToTimeTracker = () => {
-    router.push(`/time-trackers/${timeTracker.trackerId}`);
+    router.navigate(`/time-trackers/${timeTracker.trackerId}`);
   };
   return (
     <TrackerPreviewContainer onPress={routeToTimeTracker} {...stackProps}>

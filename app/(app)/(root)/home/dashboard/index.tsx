@@ -14,8 +14,6 @@ import { useRouter } from "expo-router";
 
 const Page = () => {
   const router = useRouter();
-  // const user = useUser();
-  // if (!user.data) return null;
 
   const labelForToday = detailedLabelForDay();
 
@@ -40,18 +38,18 @@ const Page = () => {
           />
         </Header.Right>
       </Header>
-      <ContentCard>
-        <YStack gap="$3">
-          <Text fontWeight={400}>Active time trackers</Text>
-          <YStack gap="$2">
+      <ContentCard overflow="hidden" padding={0}>
+        <YStack>
+          <Text padding="$3" fontWeight={400}>Active time trackers</Text>
+          <YStack>
             {activeTrackers.map((tracker, index) => (
-              <YStack gap="$2" key={tracker.trackerId}>
+              <YStack  key={tracker.trackerId}>
                 {index > 0 && <Separator />}
-                <TimeTrackerPreview timeTracker={tracker} />
+                <TimeTrackerPreview padding="$3" timeTracker={tracker} />
               </YStack>
             ))}
             {activeTrackers.length === 0 && (
-              <Body>There are currently no active time trackers</Body>
+              <Body padding="$3" paddingTop={0}>There are currently no active time trackers</Body>
             )}
           </YStack>
         </YStack>
