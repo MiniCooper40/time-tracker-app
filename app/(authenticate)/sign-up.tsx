@@ -11,7 +11,7 @@ const SignUp = () => {
         <Text>Already have an account?</Text>
         <ButtonText
           style={{ textDecorationLine: "underline" }}
-          onPress={() => router.replace("/sign-in")}
+          onPress={() => router.replace("/")}
         >
           Sign in
         </ButtonText>

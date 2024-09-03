@@ -10,6 +10,8 @@ import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { ToastProvider } from "@tamagui/toast";
 import {TimeTrackingProvider} from "@/src/components/providers/time-tracking-provider";
+import {signOut} from "@/src/lib/auth";
+import {supabase} from "@/src/lib/supabase";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,6 +26,9 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) SplashScreen.hideAsync();
+    // signOut().then(res => {
+    //   console.log(`sign out result: ${JSON.stringify(res)}`)
+    // })
   }, [loaded]);
 
   if (!loaded) {

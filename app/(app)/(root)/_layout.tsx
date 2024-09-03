@@ -31,7 +31,7 @@ const Layout = () => {
         }}
       >
         <Tabs.Screen
-          name="(dashboard)"
+          name="home"
           options={{
             title: "Dashboard",
             tabBarIcon: ({ color, size }) => (

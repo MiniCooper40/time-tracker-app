@@ -9,35 +9,24 @@ import { Button, Form, Spinner, Text, YStack } from "tamagui";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Subtitle } from "@/src/components/typography/subtitle";
-import { useCreateUser } from "@/src/features/auth/api/create-user";
 
 export const SignUpForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const createUser = useCreateUser();
+  const [error, setError] = useState<string>();
   const router = useRouter();
   const handleSignUp = async (credentials: CredentialsInput) => {
+    setError(undefined);
     setLoading(true);
     await signUp(credentials)
-      .then((result) => {
-        console.log(`sign up data ${JSON.stringify(result.data)}`);
-        console.log(`sign up error ${JSON.stringify(result.error)}`);
-        if (result.data.user) {
-          createUser.mutate(
-            {
-              token: result.data.user.id,
-              email: credentials.email,
-            },
-            {
-              onSuccess: (user) => {
-                console.log(`created user ${JSON.stringify(user)}`);
-                router.replace("/");
-              },
-            },
-          );
-        }
+      .then(() => {
+        router.setParams({ email: credentials.email });
+        router.replace({
+          pathname: "/confirm-email",
+          params: { email: credentials.email },
+        });
       })
-      .catch(console.log);
-    setLoading(false);
+      .catch(setError)
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -50,17 +39,20 @@ export const SignUpForm = () => {
       schema={credentialsInputSchema}
     >
       <YStack gap="$4">
-        <Subtitle>Sign up</Subtitle>
-        <YStack gap="$2">
-          <FormikText name="email" label="Email address" />
-          <FormikText name="password" label="Password" />
-        </YStack>
-        <Form.Trigger asChild>
-          <Button disabled={loading}>
-            {!loading && <Text>Sign in</Text>}
-            {loading && <Spinner />}
-          </Button>
-        </Form.Trigger>
+        <>
+          <Subtitle>Sign up</Subtitle>
+          <YStack gap="$2">
+            <FormikText name="email" label="Email address" />
+            <FormikText name="password" label="Password" />
+          </YStack>
+          <Form.Trigger asChild>
+            <Button disabled={loading}>
+              {!loading && <Text>Sign up</Text>}
+              {loading && <Spinner />}
+            </Button>
+          </Form.Trigger>
+        </>
+        {error && <Text color="red">{error}</Text>}
       </YStack>
     </FormikForm>
   );

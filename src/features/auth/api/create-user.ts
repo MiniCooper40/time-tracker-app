@@ -8,14 +8,18 @@ type CreateUserInput = {
   token: string;
 };
 
-const createUser = (input: CreateUserInput): Promise<User> =>
-  api.post("/user", input);
+export const createUser = (input: CreateUserInput): Promise<User> =>
+  api.post("/user", {
+    ...input,
+    firstName: "",
+    lastName: "",
+  });
 
 export const useCreateUser = (
   options?: MutationOptions<User, AxiosError, CreateUserInput>,
 ) => {
   return useMutation({
-    mutationKey: "create-user",
+    mutationKey: ["create-user"],
     mutationFn: createUser,
     ...options,
   });

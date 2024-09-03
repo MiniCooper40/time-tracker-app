@@ -3,7 +3,7 @@ import { supabase } from "@/src/lib/supabase";
 
 import Constants from "expo-constants";
 
-const baseURL = Constants.expoConfig?.hostUri
+export const baseURL = Constants.expoConfig?.hostUri
   ? "http://" +
     Constants.expoConfig?.hostUri.split(`:`)?.shift()?.concat(`:8080/`)
   : "";
@@ -16,9 +16,11 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (request) => {
+  console.log(`requesting to ${request.url}`)
   const sessionResponse = await supabase.auth.getSession();
   const { session } = sessionResponse.data;
-  if (session) {
+  console.log(`in api, get session ${JSON.stringify(session?.access_token)}`);
+  if (session && !request.headers.Authorization) {
     request.headers.Authorization = `Bearer ${session.access_token}`;
   }
   return request;
