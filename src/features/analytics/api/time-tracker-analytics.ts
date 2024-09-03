@@ -153,7 +153,6 @@ export const queryKeysForAnalyticsRequest = (
 function useTimeTrackerAnalytics<T>(
   analyticsRequest: TimeTrackerAnalyticsRequest,
 ) {
-  // console.log("querying with keys: ", ["analytics", analyticsRequest.trackerId, analyticsRequest.scope, analyticsRequest.date])
   return useQuery<T, AxiosError>({
     queryFn: () => getTimeTrackerAnalytics<T>(analyticsRequest),
     queryKey: queryKeysForAnalyticsRequest(analyticsRequest),

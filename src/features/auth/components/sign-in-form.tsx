@@ -13,7 +13,6 @@ export const SignInForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isUnconfirmed, setIsUnconfirmed] = useState(false);
   const handleLogin = async (credentials: CredentialsInput) => {
-    console.log("in handle login", credentials);
     setLoading(true);
     await signIn(credentials)
       .then(() => {

@@ -23,8 +23,6 @@ export interface FormProps<T extends AnyObject> {
 const Form = ({ children }: {children: ReactNode}) => {
   const formik = useFormikContext();
   const handleSubmit = () => {
-    console.log("Submitting");
-    console.log(formik.errors);
     formik.handleSubmit();
   };
   return <TamaguiForm onSubmit={handleSubmit}>{children}</TamaguiForm>;

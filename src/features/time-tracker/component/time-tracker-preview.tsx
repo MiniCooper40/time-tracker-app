@@ -16,11 +16,8 @@ export const TimeTrackerPreview = ({
   maxLetters = 70,
   ...stackProps
 }: TimeTrackerPreviewProps) => {
-  console.log(JSON.stringify(timeTracker));
   const { name, description, trackerId, groups } = timeTracker;
   const router = useRouter();
-
-  console.log(`description: "${description}"`);
 
   const routeToTimeTracker = () => {
     router.push(`/time-trackers/${timeTracker.trackerId}`);

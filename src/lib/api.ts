@@ -16,10 +16,8 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (request) => {
-  console.log(`requesting to ${request.url}`)
   const sessionResponse = await supabase.auth.getSession();
   const { session } = sessionResponse.data;
-  console.log(`in api, get session ${JSON.stringify(session?.access_token)}`);
   if (session && !request.headers.Authorization) {
     request.headers.Authorization = `Bearer ${session.access_token}`;
   }

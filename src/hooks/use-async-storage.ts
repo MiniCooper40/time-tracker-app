@@ -25,7 +25,6 @@ export const useAsyncStorage = (key: string) => {
     if (!value) {
       AsyncStorage.removeItem(key)
         .then(() => {
-          console.log("removed async item");
           _setValue(undefined);
         })
         .catch(() => {
@@ -35,7 +34,6 @@ export const useAsyncStorage = (key: string) => {
     } else {
       AsyncStorage.setItem(key, value)
         .then(() => {
-          console.log("saved async item");
           _setValue(value);
         })
         .catch(() => {
